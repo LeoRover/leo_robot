@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(leo_firmware)
+project(leo_fw)
 
 find_package(catkin REQUIRED)
 
