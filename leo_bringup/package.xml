@@ -19,11 +19,13 @@
   <exec_depend>web_video_server</exec_depend>
   <exec_depend>rosbridge_server</exec_depend>
   <exec_depend>rosserial_python</exec_depend>
-  <exec_depend>raspicam_node</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>xacro</exec_depend>
 
   <exec_depend>leo_description</exec_depend>
+
+  <!-- <exec_depend>raspicam_node</exec_depend> -->
 
 </package>
