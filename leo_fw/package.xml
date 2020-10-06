@@ -14,5 +14,10 @@
   <url type="repository">https://github.com/LeoRover/leo_robot</url>
 
   <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>python-whichcraft</exec_depend>
+  <exec_depend>rosgraph</exec_depend>
+  <exec_depend>std_srvs</exec_depend>
+  <exec_depend>rosmon_msgs</exec_depend>
   
 </package>
