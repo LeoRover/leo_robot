@@ -16,6 +16,9 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <exec_depend>leo_bringup</exec_depend>
+  <exec_depend>leo_fw</exec_depend>
+
+  <exec_depend>leo</exec_depend>  
 
   <export>
     <metapackage />
