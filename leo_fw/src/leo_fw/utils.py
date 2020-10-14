@@ -1,17 +1,24 @@
+import sys
+
+
 def is_tool(name):
-    """Check whether `name` is on PATH and marked as executable."""
+    """!
+    Check whether an executable exists on PATH.
+    @param name Name of the executable
+    @return True if executable exists, False otherwise
+    """
     from whichcraft import which
     return which(name) is not None
 
-def query_yes_no(question, default="yes"):
-    """Ask a yes/no question via raw_input() and return their answer.
 
-    "question" is a string that is presented to the user.
-    "default" is the presumed answer if the user just hits <Enter>.
+def query_yes_no(question, default="yes"):
+    """!
+    Ask a yes/no question via raw_input() and return their answer.
+    @param question The question that is presented to the user.
+    @param default The presumed answer if the user just hits <Enter>.
         It must be "yes" (the default), "no" or None (meaning
         an answer is required of the user).
-
-    The "answer" return value is True for "yes" or False for "no".
+    @return True if the answer is "yes", False otherwise
     """
     valid = {"yes": True, "y": True, "ye": True,
              "no": False, "n": False}
@@ -25,7 +32,6 @@ def query_yes_no(question, default="yes"):
         raise ValueError("invalid default answer: '%s'" % default)
 
     while True:
-        import sys
         sys.stdout.write(question + prompt)
         choice = raw_input().lower()
         if default is not None and choice == '':
@@ -33,10 +39,11 @@ def query_yes_no(question, default="yes"):
         elif choice in valid:
             return valid[choice]
         else:
-            sys.stdout.write("Please respond with 'yes' or 'no' "
-                             "(or 'y' or 'n').\n")
+            print("Please respond with 'yes' or 'no' "
+                  "(or 'y' or 'n').")
 
-def prompt(msg):
-    import sys
+
+def write_flush(msg):
+    """!Write a message to standard output and flush the buffer"""
     sys.stdout.write(msg)
     sys.stdout.flush()
