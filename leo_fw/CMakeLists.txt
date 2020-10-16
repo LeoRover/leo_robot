@@ -8,6 +8,6 @@ catkin_package()
 catkin_python_setup()
 
 install(
-    DIRECTORY firmware/
-    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/firmware
+  DIRECTORY firmware/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/firmware
 )
