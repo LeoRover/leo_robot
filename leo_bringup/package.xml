@@ -3,7 +3,7 @@
   <name>leo_bringup</name>
   <version>1.0.2</version>
   <description>
-    This package provides LeoRover capability.
+    Scripts and launch files for starting basic Leo Rover functionalities. 
   </description>
 
   <maintainer email="blazej@turtlerover.com">Błażej Sowa</maintainer>
