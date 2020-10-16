@@ -2,6 +2,13 @@
 Changelog for package leo_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update package description
+* Increase cmake minimum version
+* Change CMakeLists formatting
+* Add xacro to dependencies, remove raspicam_node from dependencies
+
 1.0.2 (2020-09-23)
 ------------------
 * Changed camera frame name to camera_optical_frame
