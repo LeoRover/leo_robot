@@ -2,8 +2,8 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2020-10-16)
+------------------
 * Add leo_fw package
 
 1.0.2 (2020-09-23)
