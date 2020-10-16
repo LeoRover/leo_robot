@@ -94,17 +94,21 @@ def update_fw():
     print("Current firmware version: {}".format(current_firmware_version))
     print("Version of the firmware to flash: {}".format(FIRMWARE_VERSION))
 
-    if not query_yes_no("Update the firmware?"):
+    if not query_yes_no("Flash the firmware?"):
         return
 
     if master_online and serial_node_active:
-        write_flush("--> Stopping the rosserial node.. ")
-
         if rosmon_available:
+            write_flush("--> Stopping the rosserial node.. ")
             start_stop("serial_node", "", StartStopRequest.STOP)
+            rospy.sleep(1)
             print("DONE")
         else:
-            pass
+            print("WARNING: rosserial node is active, but rosmon service "
+                  "is not available. You have to manually stop rosserial node "
+                  "before flashing the firmware.")
+            if not query_yes_no("Continue?", default="no"):
+                return
 
     bootloader_path = os.path.join(rospkg.RosPack().get_path(
         "leo_fw"), "firmware", BOOTLOADER_BINARY)
@@ -127,10 +131,12 @@ def update_fw():
         shell=True
     )
 
+    print("Flashing completed!")
+
     if master_online and serial_node_active:
         if rosmon_available:
             write_flush("--> Starting the rosserial node.. ")
             start_stop("serial_node", "", StartStopRequest.START)
             print("DONE")
         else:
-            print("Restart rosserial manually")
+            print("You can now start the rosserial node.")
