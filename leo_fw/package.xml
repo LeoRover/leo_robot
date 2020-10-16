@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
-<package format="2">
+<package format="3">
   <name>leo_fw</name>
-  <version>0.0.0</version>
-  <description>Firmware binary releases for Leo Rover</description>
+  <version>1.0.2</version>
+  <description>
+    Firmware binary releases and update script for Leo Rover
+  </description>
 
   <maintainer email="blazej@turtlerover.com">Błażej Sowa</maintainer>
   <author email="blazej@turtlerover.com">Błażej Sowa</author>
@@ -15,8 +17,15 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <exec_depend>python-whichcraft</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-whichcraft</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-whichcraft</exec_depend>
+  
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>rospkg</exec_depend>
   <exec_depend>rosgraph</exec_depend>
+  <exec_depend>rosnode</exec_depend>
+  <exec_depend>rosservice</exec_depend>
+
   <exec_depend>std_srvs</exec_depend>
   <exec_depend>rosmon_msgs</exec_depend>
   
