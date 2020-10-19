@@ -2,6 +2,9 @@
 Changelog for package leo_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.1.0 (2020-10-16)
 ------------------
 * Update package description

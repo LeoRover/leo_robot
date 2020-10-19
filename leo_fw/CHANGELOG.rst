@@ -2,6 +2,11 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add setuptools to buildtool dependencies
+* Fix CMakeLists, install update script
+
 1.1.0 (2020-10-16)
 ------------------
 * Add leo_fw package
