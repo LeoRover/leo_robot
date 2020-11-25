@@ -2,6 +2,9 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.1.1 (2020-10-19)
 ------------------
 * Add setuptools to buildtool dependencies

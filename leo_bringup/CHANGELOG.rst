@@ -2,6 +2,10 @@
 Changelog for package leo_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add rosapi node
+
 1.1.1 (2020-10-19)
 ------------------
 
