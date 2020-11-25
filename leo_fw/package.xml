@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>leo_fw</name>
-  <version>1.1.1</version>
+  <version>1.1.2</version>
   <description>
     Firmware binary releases and update script for Leo Rover
   </description>
