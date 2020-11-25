@@ -25,6 +25,12 @@
     <param name="unregister_timeout" value="86400"/>
   </node>
 
+  <node name="rosapi" pkg="rosapi" type="rosapi_node">
+    <param name="topics_glob" value="[*]" />
+    <param name="services_glob" value="[*]" />
+    <param name="params_glob" value="[*]" />
+  </node>
+
   <node name="serial_node"
         pkg="rosserial_python"
         type="serial_node.py"
