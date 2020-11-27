@@ -1,7 +1,7 @@
 # leo_robot
 
 | ROS Distribution: | Melodic |
-|:---|:---:|:---:|:---:|
+|:---|:---:|
 | **Released version:** | `1.1.2` |
 | **Development branch:** | `master` |
 | **Build status:** | [![Build Status](http://build.ros.org/job/Mdev__leo_robot__ubuntu_bionic_amd64/badge/icon)](http://build.ros.org/job/Mdev__leo_robot__ubuntu_bionic_amd64/) |
