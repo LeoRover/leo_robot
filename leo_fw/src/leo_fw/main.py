@@ -16,12 +16,7 @@ from rosmon_msgs.srv import StartStop, StartStopRequest
 from .utils import is_tool, write_flush, query_yes_no
 
 
-FIRMWARE_VERSION = "1.1.0"
-FIRMWARE_BINARY = "leo_firmware.bin"
-BOOTLOADER_BINARY = "bootloader_1_0_0_core2.bin"
-
-
-def update_fw():
+def flash_firmware(bootloader_path, firmware_path, firmware_version="<unknown>", check_version=True):
     write_flush("--> Checking if stm32loader is installed.. ")
 
     if is_tool("stm32loader"):
@@ -40,15 +35,16 @@ def update_fw():
     else:
         print("NO")
         master_online = False
-        print("ROS Master is not running. "
-              "Will not be able to check the current firmware version.")
-        if not query_yes_no("Are you sure you want to continue?",
-                            default="no"):
-            return
+        if check_version:
+            print("ROS Master is not running. "
+                  "Will not be able to check the current firmware version.")
+            if not query_yes_no("Are you sure you want to continue?",
+                                default="no"):
+                return
 
     if master_online:
         write_flush("--> Initializing ROS node.. ")
-        rospy.init_node("firmware_updater", anonymous=True)
+        rospy.init_node("firmware_flasher", anonymous=True)
         print("DONE")
 
     if master_online:
@@ -60,14 +56,15 @@ def update_fw():
         else:
             print("NO")
             serial_node_active = False
-            print("Rosserial node is not active. "
-                  "Will not be able to check the current firmware version.")
-            if not query_yes_no("Are you sure you want to continue?", default="no"):
-                return
+            if check_version:
+                print("Rosserial node is not active. "
+                      "Will not be able to check the current firmware version.")
+                if not query_yes_no("Are you sure you want to continue?", default="no"):
+                    return
 
     current_firmware_version = "<unknown>"
 
-    if master_online and serial_node_active:
+    if check_version and master_online and serial_node_active:
         write_flush("--> Checking the current firmware version.. ")
 
         if "/core2/get_firmware_version" in rosservice.get_service_list():
@@ -80,6 +77,9 @@ def update_fw():
             print("WARNING: Could not get the current firmware version: "
                   "/core2/get_firmware_version service is not available.")
 
+    print("Current firmware version: {}".format(current_firmware_version))
+    print("Version of the firmware to flash: {}".format(firmware_version))
+
     if master_online and serial_node_active:
         write_flush("--> Checking if rosmon service is available.. ")
 
@@ -90,9 +90,6 @@ def update_fw():
         else:
             print("NO")
             rosmon_available = False
-
-    print("Current firmware version: {}".format(current_firmware_version))
-    print("Version of the firmware to flash: {}".format(FIRMWARE_VERSION))
 
     if not query_yes_no("Flash the firmware?"):
         return
@@ -109,11 +106,6 @@ def update_fw():
                   "before flashing the firmware.")
             if not query_yes_no("Continue?", default="no"):
                 return
-
-    bootloader_path = os.path.join(rospkg.RosPack().get_path(
-        "leo_fw"), "firmware", BOOTLOADER_BINARY)
-    firmware_path = os.path.join(rospkg.RosPack().get_path(
-        "leo_fw"), "firmware", FIRMWARE_BINARY)
 
     print("--> Disabling flash write protection")
     subprocess.check_call("stm32loader -c rpi -f F4 -W", shell=True)

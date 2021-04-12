@@ -1,3 +1,3 @@
-from .main import update_fw
+from .main import flash_firmware
 
-__all__ = ["update_fw"]
+__all__ = ["flash_firmware"]
