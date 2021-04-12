@@ -10,11 +10,11 @@
     
   <param if="$(arg upload_description)"
          name="robot_description" 
-         command="xacro --inorder $(find leo_description)/urdf/leo.urdf.xacro"/>
+         command="xacro $(find leo_description)/urdf/leo.urdf.xacro"/>
 
   <node name="robot_state_publisher"
         pkg="robot_state_publisher"
-        type="state_publisher"/>
+        type="robot_state_publisher"/>
 
   <node name="web_video_server"
         pkg="web_video_server"
