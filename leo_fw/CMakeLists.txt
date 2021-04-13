@@ -13,6 +13,8 @@ install(
 )
 
 catkin_install_python(
-  PROGRAMS scripts/update
+  PROGRAMS 
+    scripts/update
+    scripts/flash
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
