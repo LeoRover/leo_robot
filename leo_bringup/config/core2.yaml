@@ -1,12 +1,14 @@
 core2:
+    robot_frame_id: "base_link"
+    odom_frame_id: "odom"
+    imu_frame_id: "imu"
+    gps_frame_id: "gps"
+
     diff_drive:
         wheel_radius: 0.0625
         wheel_separation: 0.33
         angular_velocity_multiplier: 1.91
-        input_timeout: 500
-
-    imu_frame_id: "imu"
-    gps_frame_id: "gps"
+        input_timeout: 500.0
 
     servo_voltage: 2
     servo1:
