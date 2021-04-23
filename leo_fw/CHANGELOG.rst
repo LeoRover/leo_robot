@@ -2,6 +2,14 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Bundle a new firmware binary release (v1.2.0)
+* Add flash script to CMakeLists
+* Add flash script for flashing custom firmware
+* Add arguments to the flash_firmware function
+* Update author and maintainer info
+
 1.1.3 (2020-12-18)
 ------------------
 

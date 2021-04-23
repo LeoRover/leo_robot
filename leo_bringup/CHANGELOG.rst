@@ -2,6 +2,13 @@
 Changelog for package leo_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Core2 parameters: change input_timeout to float, add robot and odom frame_id parameters
+* Delete launch prefix from serial_node
+* Avoid deprecation warnings from xacro and robot_state_publisher
+* Update author and maintainer info
+
 1.1.3 (2020-12-18)
 ------------------
 * Add tf_frame_prefix argument to the launch file

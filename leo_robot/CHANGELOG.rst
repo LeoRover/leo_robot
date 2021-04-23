@@ -2,6 +2,10 @@
 Changelog for package leo_robot
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update author and maintainer info
+
 1.1.3 (2020-12-18)
 ------------------
 
