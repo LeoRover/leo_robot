@@ -5,7 +5,7 @@ import rospkg
 
 import leo_fw
 
-FIRMWARE_VERSION = "1.1.0"
+FIRMWARE_VERSION = "1.2.0"
 FIRMWARE_BINARY = "leo_firmware.bin"
 BOOTLOADER_BINARY = "bootloader_1_0_0_core2.bin"
 
