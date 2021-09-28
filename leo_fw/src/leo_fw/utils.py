@@ -1,5 +1,5 @@
 import sys
-from buildins import input
+from builtins import input
 
 
 def is_tool(name):
