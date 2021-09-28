@@ -16,15 +16,19 @@ from rosmon_msgs.srv import StartStop, StartStopRequest
 from .utils import is_tool, write_flush, query_yes_no
 
 
-def flash_firmware(bootloader_path, firmware_path, firmware_version="<unknown>", check_version=True):
+def flash_firmware(
+    bootloader_path, firmware_path, firmware_version="<unknown>", check_version=True
+):
     write_flush("--> Checking if stm32loader is installed.. ")
 
     if is_tool("stm32loader"):
         print("YES")
     else:
         print("NO")
-        print("ERROR: Cannot find the stm32loader tool. "
-              "Make sure the python3-stm32loader package is installed.")
+        print(
+            "ERROR: Cannot find the stm32loader tool. "
+            "Make sure the python3-stm32loader package is installed."
+        )
         return
 
     write_flush("--> Checking if ROS Master is online.. ")
@@ -36,10 +40,11 @@ def flash_firmware(bootloader_path, firmware_path, firmware_version="<unknown>",
         print("NO")
         master_online = False
         if check_version:
-            print("ROS Master is not running. "
-                  "Will not be able to check the current firmware version.")
-            if not query_yes_no("Are you sure you want to continue?",
-                                default="no"):
+            print(
+                "ROS Master is not running. "
+                "Will not be able to check the current firmware version."
+            )
+            if not query_yes_no("Are you sure you want to continue?", default="no"):
                 return
 
     if master_online:
@@ -57,8 +62,10 @@ def flash_firmware(bootloader_path, firmware_path, firmware_version="<unknown>",
             print("NO")
             serial_node_active = False
             if check_version:
-                print("Rosserial node is not active. "
-                      "Will not be able to check the current firmware version.")
+                print(
+                    "Rosserial node is not active. "
+                    "Will not be able to check the current firmware version."
+                )
                 if not query_yes_no("Are you sure you want to continue?", default="no"):
                     return
 
@@ -69,13 +76,16 @@ def flash_firmware(bootloader_path, firmware_path, firmware_version="<unknown>",
 
         if "/core2/get_firmware_version" in rosservice.get_service_list():
             get_firmware_version = rospy.ServiceProxy(
-                "/core2/get_firmware_version", Trigger)
+                "/core2/get_firmware_version", Trigger
+            )
             current_firmware_version = get_firmware_version().message
             print("OK")
         else:
             print("FAIL")
-            print("WARNING: Could not get the current firmware version: "
-                  "/core2/get_firmware_version service is not available.")
+            print(
+                "WARNING: Could not get the current firmware version: "
+                "/core2/get_firmware_version service is not available."
+            )
 
     print("Current firmware version: {}".format(current_firmware_version))
     print("Version of the firmware to flash: {}".format(firmware_version))
@@ -101,9 +111,11 @@ def flash_firmware(bootloader_path, firmware_path, firmware_version="<unknown>",
             rospy.sleep(1)
             print("DONE")
         else:
-            print("WARNING: rosserial node is active, but rosmon service "
-                  "is not available. You have to manually stop rosserial node "
-                  "before flashing the firmware.")
+            print(
+                "WARNING: rosserial node is active, but rosmon service "
+                "is not available. You have to manually stop rosserial node "
+                "before flashing the firmware."
+            )
             if not query_yes_no("Continue?", default="no"):
                 return
 
@@ -112,15 +124,13 @@ def flash_firmware(bootloader_path, firmware_path, firmware_version="<unknown>",
 
     print("--> Erasing flash and flashing bootloader")
     subprocess.check_call(
-        "stm32loader -c rpi -f F4 -e -w -v {}".format(bootloader_path),
-        shell=True
+        "stm32loader -c rpi -f F4 -e -w -v {}".format(bootloader_path), shell=True
     )
 
     print("--> Flashing firmware")
     subprocess.check_call(
-        "stm32loader -c rpi -f F4 -a 0x08010000 -w -v {}".format(
-            firmware_path),
-        shell=True
+        "stm32loader -c rpi -f F4 -a 0x08010000 -w -v {}".format(firmware_path),
+        shell=True,
     )
 
     print("Flashing completed!")

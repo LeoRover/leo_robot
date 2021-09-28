@@ -11,12 +11,19 @@ BOOTLOADER_BINARY = "bootloader_1_0_0_core2.bin"
 parser = argparse.ArgumentParser(description="Flash firmware to CORE2 board.")
 
 parser.add_argument("firmware_path", help="path to the firmware binary.")
-parser.add_argument("-s", "--skip-check", dest="check_version", action="store_false",
-                    help="skip checking the current firmware version")
+parser.add_argument(
+    "-s",
+    "--skip-check",
+    dest="check_version",
+    action="store_false",
+    help="skip checking the current firmware version",
+)
 args = parser.parse_args()
 
-bootloader_path = os.path.join(rospkg.RosPack().get_path(
-    "leo_fw"), "firmware", BOOTLOADER_BINARY)
+bootloader_path = os.path.join(
+    rospkg.RosPack().get_path("leo_fw"), "firmware", BOOTLOADER_BINARY
+)
 
-leo_fw.flash_firmware(bootloader_path, args.firmware_path,
-                      check_version=args.check_version)
+leo_fw.flash_firmware(
+    bootloader_path, args.firmware_path, check_version=args.check_version
+)

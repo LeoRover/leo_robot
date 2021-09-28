@@ -18,9 +18,8 @@ def shutdownCallback(x):
 
 
 try:
-    rospy.init_node('leo_system')
-    pose_sub = rospy.Subscriber(
-        "system/shutdown", Empty, shutdownCallback)
+    rospy.init_node("leo_system")
+    pose_sub = rospy.Subscriber("system/shutdown", Empty, shutdownCallback)
     pose_sub = rospy.Subscriber("system/reboot", Empty, rebootCallback)
     rospy.loginfo("Leo system node started!")
 except rospy.ROSInterruptException as e:
