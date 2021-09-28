@@ -2,6 +2,11 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Reformat python code with black
+* Make the code python 2-3 compatible
+
 1.2.0 (2021-04-23)
 ------------------
 * Bundle a new firmware binary release (v1.2.0)

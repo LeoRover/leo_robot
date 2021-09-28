@@ -2,6 +2,10 @@
 Changelog for package leo_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Reformat python code with black
+
 1.2.0 (2021-04-23)
 ------------------
 * Core2 parameters: change input_timeout to float, add robot and odom frame_id parameters
