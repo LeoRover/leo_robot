@@ -2,8 +2,8 @@
 Changelog for package leo_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.1 (2021-09-28)
+------------------
 * Reformat python code with black
 
 1.2.0 (2021-04-23)

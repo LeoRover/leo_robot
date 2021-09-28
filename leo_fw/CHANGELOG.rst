@@ -2,8 +2,8 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.1 (2021-09-28)
+------------------
 * Reformat python code with black
 * Make the code python 2-3 compatible
 
