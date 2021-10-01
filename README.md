@@ -1,10 +1,10 @@
 # leo_robot
 
-| ROS Distribution: | Melodic |
-|:---|:---:|
-| **Released version:** | [1.1.3] |
-| **Development branch:** | [master] |
-| **Build status:** | [![Build Status](http://build.ros.org/job/Mdev__leo_robot__ubuntu_bionic_amd64/badge/icon)](http://build.ros.org/job/Mdev__leo_robot__ubuntu_bionic_amd64/) |
+| ROS Distribution: | Melodic | Noetic |
+|:---|:---:|:--:|
+| **Released version:** | [1.2.1] | [1.2.1] |
+| **Development branch:** | [master] | [master] |
+| **Build status:** | [![Build Status](http://build.ros.org/job/Mdev__leo_robot__ubuntu_bionic_amd64/badge/icon)](http://build.ros.org/job/Mdev__leo_robot__ubuntu_bionic_amd64/) | [![Build Status](https://build.ros.org/job/Ndev__leo_robot__ubuntu_focal_amd64/badge/icon)](https://build.ros.org/job/Ndev__leo_robot__ubuntu_focal_amd64/) |
 
 Robot ROS packages for Leo Rover. These packages can be run only on the real robot. Not usable for the simulation.
 
@@ -20,4 +20,4 @@ For more information about the robot, visit [Robots/Leo Rover].
 [leo_fw]: http://wiki.ros.org/leo_fw
 [Robots/Leo Rover]: http://wiki.ros.org/Robots/Leo%20Rover
 [master]: https://github.com/LeoRover/leo_robot/tree/master
-[1.1.3]: https://github.com/LeoRover/leo_robot/tree/1.1.3
+[1.2.1]: https://github.com/LeoRover/leo_robot/tree/1.2.1
