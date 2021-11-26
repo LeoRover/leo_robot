@@ -1,11 +1,35 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(leo_fw)
 
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  sensor_msgs
+  nav_msgs
+  leo_msgs
+)
 
 catkin_python_setup()
 
-catkin_package()
+catkin_package(
+  CATKIN_DEPENDS
+    roscpp
+    sensor_msgs
+    nav_msgs
+    leo_msgs
+)
+
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
+
+
+add_executable(firmware_message_parser
+  src/firmware_message_parser.cpp
+)
+
+target_link_libraries(firmware_message_parser
+  ${catkin_LIBRARIES}
+)
 
 install(
   DIRECTORY firmware
@@ -17,4 +41,8 @@ catkin_install_python(
     scripts/update
     scripts/flash
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(TARGETS firmware_message_parser
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
