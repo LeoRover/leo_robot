@@ -44,10 +44,10 @@ void wheel_odom_callback(const leo_msgs::WheelOdomPtr &msg) {
   wheel_odom.header.stamp = msg->stamp;
   wheel_odom.twist.twist.linear.x = msg->velocity_lin;
   wheel_odom.twist.twist.angular.z = msg->velocity_ang;
-  wheel_odom.pose.pose.position.x = msg->position_x;
-  wheel_odom.pose.pose.position.y = msg->position_y;
-  wheel_odom.pose.pose.orientation.z = std::sin(msg->position_yaw * 0.5F);
-  wheel_odom.pose.pose.orientation.w = std::cos(msg->position_yaw * 0.5F);
+  wheel_odom.pose.pose.position.x = msg->pose_x;
+  wheel_odom.pose.pose.position.y = msg->pose_y;
+  wheel_odom.pose.pose.orientation.z = std::sin(msg->pose_yaw * 0.5F);
+  wheel_odom.pose.pose.orientation.w = std::cos(msg->pose_yaw * 0.5F);
 
   wheel_odom_pub.publish(wheel_odom);
 }
