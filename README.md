@@ -1,11 +1,5 @@
 # leo_robot
 
-| ROS Distribution: | Melodic |
-|:---|:---:|
-| **Released version:** | [1.2.1] |
-| **Development branch:** | [melodic] |
-| **Build status:** | [![Build Status](http://build.ros.org/job/Mdev__leo_robot__ubuntu_bionic_amd64/badge/icon)](http://build.ros.org/job/Mdev__leo_robot__ubuntu_bionic_amd64/) |
-
 Robot ROS packages for Leo Rover. These packages can be run only on the real robot. Not usable for the simulation.
 
 * [leo_robot] - Metapackage for this repository.
@@ -19,5 +13,3 @@ For more information about the robot, visit [Robots/Leo Rover].
 [leo_bringup]: http://wiki.ros.org/leo_bringup
 [leo_fw]: http://wiki.ros.org/leo_fw
 [Robots/Leo Rover]: http://wiki.ros.org/Robots/Leo%20Rover
-[melodic]: https://github.com/LeoRover/leo_robot/tree/melodic
-[1.2.1]: https://github.com/LeoRover/leo_robot/tree/1.2.1
