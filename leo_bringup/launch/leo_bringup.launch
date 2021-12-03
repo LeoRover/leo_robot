@@ -40,6 +40,10 @@
     <param name="baud" value="250000"/>
   </node>
 
+  <node name="firmware_message_parser"
+        pkg="leo_fw"
+        type="firmware_message_parser"/>
+
   <node name="leo_system"
         pkg="leo_bringup"
         type="leo_system"/>
