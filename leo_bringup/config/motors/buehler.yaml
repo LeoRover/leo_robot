@@ -1,3 +1,10 @@
+leo_hat:
+  motors:
+    encoder_resolution: 878.4
+    torque_constant: 1.17647
+    pid: {p: 0.0, i: 0.005, d: 0.0}
+    power_limit: 1000.0
+
 core2:
   motors:
     encoder_resolution: 878.4

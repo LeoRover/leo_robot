@@ -1,3 +1,10 @@
+leo_hat:
+    diff_drive:
+        wheel_radius: 0.0625
+        wheel_separation: 0.33
+        angular_velocity_multiplier: 1.91
+        input_timeout: 500
+
 core2:
     robot_frame_id: "base_link"
     odom_frame_id: "odom"
