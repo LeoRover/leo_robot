@@ -1,11 +1,6 @@
-from __future__ import print_function
-
-import os
-import sys
 import subprocess
 
 import rospy
-import rospkg
 import rosgraph
 import rosnode
 import rosservice
@@ -13,11 +8,47 @@ import rosservice
 from std_srvs.srv import Trigger
 from rosmon_msgs.srv import StartStop, StartStopRequest
 
-from .utils import is_tool, write_flush, query_yes_no
+from .utils import *
+
+
+def flash_core2(bootloader_path: str, firmware_path: str):
+    print("--> Disabling read/write protections and erasing flash")
+    subprocess.check_call("stm32loader -c rpi -f F4 -R -u -W", shell=True)
+
+    print("--> Erasing flash")
+    subprocess.check_call("stm32loader -c rpi -f F4 -R -e", shell=True)
+
+    print("--> Flashing bootloader")
+    subprocess.check_call(
+        f"stm32loader -c rpi -f F4 -R -w -v {bootloader_path}", shell=True
+    )
+
+    print("--> Flashing firmware")
+    subprocess.check_call(
+        f"stm32loader -c rpi -f F4 -R -a 0x08010000 -w -v {firmware_path}", shell=True
+    )
+
+    print("--> Flashing completed!")
+
+
+def flash_leo_hat(firmware_path: str):
+    print("--> Disabling flash read/write protections")
+    subprocess.check_call("stm32loader -c rpi -f F4 -u -W", shell=True)
+
+    print("--> Erasing flash")
+    subprocess.check_call("stm32loader -c rpi -f F4 -e", shell=True)
+
+    print("--> Flashing firmware")
+    subprocess.check_call(f"stm32loader -c rpi -f F4 -w -v {firmware_path}", shell=True)
+
+    print("--> Flashing completed!")
 
 
 def flash_firmware(
-    bootloader_path, firmware_path, firmware_version="<unknown>", check_version=True
+    bootloader_path: str,
+    firmware_path: str,
+    firmware_version="<unknown>",
+    check_version=True,
 ):
     write_flush("--> Checking if stm32loader is installed.. ")
 
@@ -30,6 +61,8 @@ def flash_firmware(
             "Make sure the python3-stm32loader package is installed."
         )
         return
+
+    #####################################################
 
     write_flush("--> Checking if ROS Master is online.. ")
 
@@ -47,10 +80,14 @@ def flash_firmware(
             if not query_yes_no("Are you sure you want to continue?", default="no"):
                 return
 
+    #####################################################
+
     if master_online:
         write_flush("--> Initializing ROS node.. ")
         rospy.init_node("firmware_flasher", anonymous=True)
         print("DONE")
+
+    #####################################################
 
     if master_online:
         write_flush("--> Checking if rosserial node is active.. ")
@@ -68,6 +105,8 @@ def flash_firmware(
                 )
                 if not query_yes_no("Are you sure you want to continue?", default="no"):
                     return
+
+    #####################################################
 
     current_firmware_version = "<unknown>"
 
@@ -87,8 +126,12 @@ def flash_firmware(
                 "/core2/get_firmware_version service is not available."
             )
 
+    #####################################################
+
     print("Current firmware version: {}".format(current_firmware_version))
     print("Version of the firmware to flash: {}".format(firmware_version))
+
+    #####################################################
 
     if master_online and serial_node_active:
         write_flush("--> Checking if rosmon service is available.. ")
@@ -101,8 +144,12 @@ def flash_firmware(
             print("NO")
             rosmon_available = False
 
+    #####################################################
+
     if not query_yes_no("Flash the firmware?"):
         return
+
+    #####################################################
 
     if master_online and serial_node_active:
         if rosmon_available:
@@ -119,21 +166,18 @@ def flash_firmware(
             if not query_yes_no("Continue?", default="no"):
                 return
 
-    print("--> Disabling flash write protection")
-    subprocess.check_call("stm32loader -c rpi -f F4 -W", shell=True)
+    #####################################################
 
-    print("--> Erasing flash and flashing bootloader")
-    subprocess.check_call(
-        "stm32loader -c rpi -f F4 -e -w -v {}".format(bootloader_path), shell=True
-    )
+    print("Choose the board.")
+    board = prompt_options([("Husarion CORE2", "core2"), ("Leo Hat", "leo_hat")])
+    print(f"Your selection: {board}")
 
-    print("--> Flashing firmware")
-    subprocess.check_call(
-        "stm32loader -c rpi -f F4 -a 0x08010000 -w -v {}".format(firmware_path),
-        shell=True,
-    )
+    if board == "core2":
+        flash_core2(bootloader_path, firmware_path)
+    elif board == "leo_hat":
+        flash_leo_hat(firmware_path)
 
-    print("Flashing completed!")
+    #####################################################
 
     if master_online and serial_node_active:
         if rosmon_available:

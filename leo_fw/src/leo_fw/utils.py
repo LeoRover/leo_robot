@@ -1,8 +1,9 @@
+from __future__ import annotations
+
 import sys
-from builtins import input
 
 
-def is_tool(name):
+def is_tool(name: str) -> bool:
     """!
     Check whether an executable exists on PATH.
     @param name Name of the executable
@@ -13,9 +14,15 @@ def is_tool(name):
     return which(name) is not None
 
 
-def query_yes_no(question, default="yes"):
+def write_flush(msg: str):
+    """!Write a message to standard output and flush the buffer"""
+    sys.stdout.write(msg)
+    sys.stdout.flush()
+
+
+def query_yes_no(question: str, default: str = "yes") -> bool:
     """!
-    Ask a yes/no question via raw_input() and return their answer.
+    Ask a yes/no question via input() and return their answer.
     @param question The question that is presented to the user.
     @param default The presumed answer if the user just hits <Enter>.
         It must be "yes" (the default), "no" or None (meaning
@@ -33,7 +40,7 @@ def query_yes_no(question, default="yes"):
         raise ValueError("invalid default answer: '%s'" % default)
 
     while True:
-        sys.stdout.write(question + prompt)
+        write_flush(question + prompt)
         choice = input().lower()
         if default is not None and choice == "":
             return valid[default]
@@ -43,7 +50,19 @@ def query_yes_no(question, default="yes"):
             print("Please respond with 'yes' or 'no' " "(or 'y' or 'n').")
 
 
-def write_flush(msg):
-    """!Write a message to standard output and flush the buffer"""
-    sys.stdout.write(msg)
-    sys.stdout.flush()
+def prompt_options(options: list[tuple[str, str]], default: int = 1) -> str:
+# def prompt_options(options, default: int = 1) -> str:
+    for i, (name, value) in enumerate(options):
+        print(f"{i+1}) {name}")
+
+    while True:
+        input_raw = input(f"Your selection [{default}]: ")
+        if input_raw == "":
+            selected_nr = default
+        else:
+            selected_nr = int(input_raw) - 1
+        if 0 <= selected_nr < len(options):
+            _, selected = options[selected_nr]
+            return selected
+        else:
+            print(f"Please select a valid option")
