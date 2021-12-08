@@ -37,7 +37,7 @@ def query_yes_no(question: str, default: str = "yes") -> bool:
     elif default == "no":
         prompt = " [y/N] "
     else:
-        raise ValueError("invalid default answer: '%s'" % default)
+        raise ValueError(f"invalid default answer: '{default}'")
 
     while True:
         write_flush(question + prompt)
@@ -51,8 +51,7 @@ def query_yes_no(question: str, default: str = "yes") -> bool:
 
 
 def prompt_options(options: list[tuple[str, str]], default: int = 1) -> str:
-# def prompt_options(options, default: int = 1) -> str:
-    for i, (name, value) in enumerate(options):
+    for i, (name, _) in enumerate(options):
         print(f"{i+1}) {name}")
 
     while True:

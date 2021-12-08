@@ -128,8 +128,8 @@ def flash_firmware(
 
     #####################################################
 
-    print("Current firmware version: {}".format(current_firmware_version))
-    print("Version of the firmware to flash: {}".format(firmware_version))
+    print(f"Current firmware version: {current_firmware_version}")
+    print(f"Version of the firmware to flash: {firmware_version}")
 
     #####################################################
 
