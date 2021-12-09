@@ -1,3 +1,5 @@
+from typing import Optional
+
 import subprocess
 
 import rospy
@@ -5,10 +7,10 @@ import rosgraph
 import rosnode
 import rosservice
 
-from std_srvs.srv import Trigger
 from rosmon_msgs.srv import StartStop, StartStopRequest
 
 from .utils import *
+from .board import BoardType, determine_board, check_firmware_version
 
 
 def flash_core2(bootloader_path: str, firmware_path: str):
@@ -47,7 +49,8 @@ def flash_leo_hat(firmware_path: str):
 def flash_firmware(
     bootloader_path: str,
     firmware_path: str,
-    firmware_version="<unknown>",
+    firmware_version: str = "<unknown>",
+    board_type: Optional[BoardType] = None,
     check_version=True,
 ):
     write_flush("--> Checking if stm32loader is installed.. ")
@@ -108,28 +111,29 @@ def flash_firmware(
 
     #####################################################
 
-    current_firmware_version = "<unknown>"
+    if master_online and serial_node_active and board_type is None:
+        write_flush("--> Trying to determine board type.. ")
 
-    if check_version and master_online and serial_node_active:
-        write_flush("--> Checking the current firmware version.. ")
+        board_type = determine_board()
 
-        if "/core2/get_firmware_version" in rosservice.get_service_list():
-            get_firmware_version = rospy.ServiceProxy(
-                "/core2/get_firmware_version", Trigger
-            )
-            current_firmware_version = get_firmware_version().message
-            print("OK")
+        if board_type is not None:
+            print("SUCCESS")
         else:
             print("FAIL")
-            print(
-                "WARNING: Could not get the current firmware version: "
-                "/core2/get_firmware_version service is not available."
-            )
 
     #####################################################
 
-    print(f"Current firmware version: {current_firmware_version}")
-    print(f"Version of the firmware to flash: {firmware_version}")
+    current_firmware_version = "<unknown>"
+
+    if check_version and master_online and serial_node_active:
+        write_flush("--> Trying to check the current firmware version.. ")
+
+        current_firmware_version = check_firmware_version()
+
+        if current_firmware_version != "<unknown>":
+            print("SUCCESS")
+        else:
+            print("FAIL")
 
     #####################################################
 
@@ -145,6 +149,9 @@ def flash_firmware(
             rosmon_available = False
 
     #####################################################
+
+    print(f"Current firmware version: {current_firmware_version}")
+    print(f"Version of the firmware to flash: {firmware_version}")
 
     if not query_yes_no("Flash the firmware?"):
         return
@@ -168,13 +175,21 @@ def flash_firmware(
 
     #####################################################
 
-    print("Choose the board.")
-    board = prompt_options([("Husarion CORE2", "core2"), ("Leo Hat", "leo_hat")])
-    print(f"Your selection: {board}")
+    if board_type is None:
+        print("Was not able to determine the board type. Choose the board manually: ")
 
-    if board == "core2":
+        board_type = prompt_options(
+            [
+                ("Husarion CORE2", BoardType.CORE2),
+                ("Leo Hat", BoardType.LEO_HAT),
+            ]
+        )
+
+    #####################################################
+
+    if board_type == BoardType.CORE2:
         flash_core2(bootloader_path, firmware_path)
-    elif board == "leo_hat":
+    elif board_type == BoardType.LEO_HAT:
         flash_leo_hat(firmware_path)
 
     #####################################################
