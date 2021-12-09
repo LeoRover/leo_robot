@@ -1,19 +1,5 @@
 #!/usr/bin/env python
 
-import os
-import rospkg
-
 import leo_fw
 
-FIRMWARE_VERSION = "1.2.0"
-FIRMWARE_BINARY = "leo_firmware.bin"
-BOOTLOADER_BINARY = "bootloader_1_0_0_core2.bin"
-
-bootloader_path = os.path.join(
-    rospkg.RosPack().get_path("leo_fw"), "firmware", BOOTLOADER_BINARY
-)
-firmware_path = os.path.join(
-    rospkg.RosPack().get_path("leo_fw"), "firmware", FIRMWARE_BINARY
-)
-
-leo_fw.flash_firmware(bootloader_path, firmware_path, FIRMWARE_VERSION)
+leo_fw.flash_firmware()
