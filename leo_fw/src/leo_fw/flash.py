@@ -1,8 +1,10 @@
-from typing import Optional
-
+import os
 import subprocess
 
+from typing import Optional
+
 import rospy
+import rospkg
 import rosgraph
 import rosnode
 import rosservice
@@ -47,11 +49,9 @@ def flash_leo_hat(firmware_path: str):
 
 
 def flash_firmware(
-    bootloader_path: str,
-    firmware_path: str,
-    firmware_version: str = "<unknown>",
+    firmware_path: Optional[str] = None,
     board_type: Optional[BoardType] = None,
-    check_version=True,
+    check_version: bool = True,
 ):
     write_flush("--> Checking if stm32loader is installed.. ")
 
@@ -150,6 +150,23 @@ def flash_firmware(
 
     #####################################################
 
+    if board_type is None:
+        print("Was not able to determine the board type. Choose the board manually: ")
+
+        board_type = prompt_options(
+            [
+                ("Husarion CORE2", BoardType.CORE2),
+                ("Leo Hat", BoardType.LEO_HAT),
+            ]
+        )
+
+    #####################################################
+
+    if board_type == BoardType.CORE2:
+        firmware_version = "1.2.0"
+    elif board_type == BoardType.LEO_HAT:
+        firmware_version = "1.0.0"
+
     print(f"Current firmware version: {current_firmware_version}")
     print(f"Version of the firmware to flash: {firmware_version}")
 
@@ -175,21 +192,27 @@ def flash_firmware(
 
     #####################################################
 
-    if board_type is None:
-        print("Was not able to determine the board type. Choose the board manually: ")
-
-        board_type = prompt_options(
-            [
-                ("Husarion CORE2", BoardType.CORE2),
-                ("Leo Hat", BoardType.LEO_HAT),
-            ]
+    if board_type == BoardType.CORE2:
+        bootloader_path = os.path.join(
+            rospkg.RosPack().get_path("leo_fw"),
+            "firmware/bootloader_1_0_0_core2.bin",
         )
 
-    #####################################################
+        if firmware_path is None:
+            firmware_path = os.path.join(
+                rospkg.RosPack().get_path("leo_fw"),
+                "firmware/core2_firmware.bin",
+            )
 
-    if board_type == BoardType.CORE2:
         flash_core2(bootloader_path, firmware_path)
+
     elif board_type == BoardType.LEO_HAT:
+        if firmware_path is None:
+            firmware_path = os.path.join(
+                rospkg.RosPack().get_path("leo_fw"),
+                "firmware/leo_hat_firmware.bin",
+            )
+
         flash_leo_hat(firmware_path)
 
     #####################################################
