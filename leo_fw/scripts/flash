@@ -1,14 +1,11 @@
 #!/usr/bin/env python
 
-import os
 import argparse
-import rospkg
 
 import leo_fw
+from leo_fw.board import BoardType
 
-BOOTLOADER_BINARY = "bootloader_1_0_0_core2.bin"
-
-parser = argparse.ArgumentParser(description="Flash firmware to CORE2 board.")
+parser = argparse.ArgumentParser(description="Flash firmware to board.")
 
 parser.add_argument("firmware_path", help="path to the firmware binary.")
 parser.add_argument(
@@ -18,12 +15,19 @@ parser.add_argument(
     action="store_false",
     help="skip checking the current firmware version",
 )
-args = parser.parse_args()
-
-bootloader_path = os.path.join(
-    rospkg.RosPack().get_path("leo_fw"), "firmware", BOOTLOADER_BINARY
+parser.add_argument(
+    "-b",
+    "--board",
+    dest="board_type",
+    type=BoardType,
+    choices=list(BoardType),
+    help="explicitly select the board type",
 )
 
+args = parser.parse_args()
+
 leo_fw.flash_firmware(
-    bootloader_path, args.firmware_path, check_version=args.check_version
+    firmware_path=args.firmware_path,
+    board_type=args.board_type,
+    check_version=args.check_version,
 )

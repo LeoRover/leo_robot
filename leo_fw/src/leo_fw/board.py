@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from enum import Enum
 from typing import Optional
 
 import rospy
@@ -8,8 +8,11 @@ from std_srvs.srv import Trigger
 
 
 class BoardType(Enum):
-    CORE2 = auto()
-    LEO_HAT = auto()
+    CORE2 = "core2"
+    LEO_HAT = "leo_hat"
+
+    def __str__(self):
+        return self.value
 
 
 def determine_board() -> Optional[BoardType]:
