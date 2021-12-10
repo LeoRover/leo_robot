@@ -90,7 +90,7 @@ void imu_callback(const leo_msgs::ImuPtr &msg) {
   imu.linear_acceleration.y = msg->accel_y;
   imu.linear_acceleration.z = msg->accel_z;
 
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < 3; i++) {
     imu.angular_velocity_covariance[i * 4] =
         imu_angular_velocity_covariance_diagonal[i];
     imu.linear_acceleration_covariance[i * 4] =
