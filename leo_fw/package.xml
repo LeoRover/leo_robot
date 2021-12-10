@@ -3,7 +3,7 @@
   <name>leo_fw</name>
   <version>1.2.1</version>
   <description>
-    Firmware binary releases and update script for Leo Rover
+    Binary releases of Leo Rover firmware and related utilities
   </description>
 
   <maintainer email="support@fictionlab.pl">Fictionlab</maintainer>
@@ -20,7 +20,7 @@
 
   <exec_depend>python3-whichcraft</exec_depend>
   <exec_depend>python3-rospkg</exec_depend>
-  
+
   <exec_depend>rospy</exec_depend>
   <exec_depend>rosgraph</exec_depend>
   <exec_depend>rosnode</exec_depend>
@@ -34,5 +34,5 @@
   <depend>nav_msgs</depend>
 
   <depend>leo_msgs</depend>
-  
+
 </package>
