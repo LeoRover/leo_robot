@@ -23,11 +23,11 @@ include_directories(
 )
 
 
-add_executable(firmware_message_parser
-  src/firmware_message_parser.cpp
+add_executable(firmware_message_converter
+  src/firmware_message_converter.cpp
 )
 
-target_link_libraries(firmware_message_parser
+target_link_libraries(firmware_message_converter
   ${catkin_LIBRARIES}
 )
 
@@ -43,6 +43,6 @@ catkin_install_python(
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(TARGETS firmware_message_parser
+install(TARGETS firmware_message_converter
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
