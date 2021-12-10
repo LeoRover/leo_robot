@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
       }
       if (!imu_advertised && topic.name == imu_topic) {
         ROS_INFO("Advertised Imu!");
-        imu_pub = nh.advertise<sensor_msgs::Imu>("imu/data", 10);
+        imu_pub = nh.advertise<sensor_msgs::Imu>("imu/data_raw", 10);
         imu_sub = nh.subscribe("firmware/imu", 5, imu_callback);
         imu_advertised = true;
       }
