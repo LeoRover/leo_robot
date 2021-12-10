@@ -42,7 +42,10 @@
 
   <node name="firmware_message_converter"
         pkg="leo_fw"
-        type="firmware_message_converter"/>
+        type="firmware_message_converter">
+    <rosparam command="load" 
+              file="$(find leo_bringup)/config/firmware_message_converter.yaml"/>
+  </node>
 
   <node name="leo_system"
         pkg="leo_bringup"

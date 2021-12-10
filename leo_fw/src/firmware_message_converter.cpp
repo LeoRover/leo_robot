@@ -22,11 +22,35 @@ static ros::Subscriber imu_sub;
 static ros::Publisher imu_pub;
 static bool imu_advertised = false;
 
+std::string robot_frame_id = "base_link";
+std::string odom_frame_id = "odom";
+std::string imu_frame_id = "imu";
+std::vector<std::string> wheel_joint_names = {
+    "wheel_FL_joint", "wheel_RL_joint", "wheel_FR_joint", "wheel_RR_joint"};
+std::vector<double> wheel_odom_twist_covariance_diagonal = {0.0001, 0.0, 0.0,
+                                                            0.0,    0.0, 0.001};
+std::vector<double> imu_angular_velocity_covariance_diagonal = {
+    0.000001, 0.000001, 0.00001};
+std::vector<double> imu_linear_acceleration_covariance_diagonal = {0.001, 0.001,
+                                                                   0.001};
+
+void load_parameters(ros::NodeHandle &pnh) {
+  pnh.getParam("robot_frame_id", robot_frame_id);
+  pnh.getParam("odom_frame_id", odom_frame_id);
+  pnh.getParam("imu_frame_id", imu_frame_id);
+  pnh.getParam("wheel_joint_names", wheel_joint_names);
+  pnh.getParam("wheel_odom_twist_covariance_diagonal",
+               wheel_odom_twist_covariance_diagonal);
+  pnh.getParam("imu_angular_velocity_covariance_diagonal",
+               imu_angular_velocity_covariance_diagonal);
+  pnh.getParam("imu_linear_acceleration_covariance_diagonal",
+               imu_linear_acceleration_covariance_diagonal);
+}
+
 void wheel_states_callback(const leo_msgs::WheelStatesPtr &msg) {
   sensor_msgs::JointState joint_states;
   joint_states.header.stamp = msg->stamp;
-  joint_states.name = {"wheel_FL_joint", "wheel_RL_joint", "wheel_FR_joint",
-                       "wheel_RR_joint"};
+  joint_states.name = wheel_joint_names;
   joint_states.position =
       std::vector<double>(msg->position.begin(), msg->position.end());
   joint_states.velocity =
@@ -39,8 +63,8 @@ void wheel_states_callback(const leo_msgs::WheelStatesPtr &msg) {
 
 void wheel_odom_callback(const leo_msgs::WheelOdomPtr &msg) {
   nav_msgs::Odometry wheel_odom;
-  wheel_odom.header.frame_id = "odom";
-  wheel_odom.child_frame_id = "base_link";
+  wheel_odom.header.frame_id = odom_frame_id;
+  wheel_odom.child_frame_id = robot_frame_id;
   wheel_odom.header.stamp = msg->stamp;
   wheel_odom.twist.twist.linear.x = msg->velocity_lin;
   wheel_odom.twist.twist.angular.z = msg->velocity_ang;
@@ -49,12 +73,15 @@ void wheel_odom_callback(const leo_msgs::WheelOdomPtr &msg) {
   wheel_odom.pose.pose.orientation.z = std::sin(msg->pose_yaw * 0.5F);
   wheel_odom.pose.pose.orientation.w = std::cos(msg->pose_yaw * 0.5F);
 
+  for (int i = 0; i < 6; i++)
+    wheel_odom.twist.covariance[i * 7] =
+        wheel_odom_twist_covariance_diagonal[i];
+
   wheel_odom_pub.publish(wheel_odom);
 }
-
 void imu_callback(const leo_msgs::ImuPtr &msg) {
   sensor_msgs::Imu imu;
-  imu.header.frame_id = "imu";
+  imu.header.frame_id = imu_frame_id;
   imu.header.stamp = msg->stamp;
   imu.angular_velocity.x = msg->gyro_x;
   imu.angular_velocity.y = msg->gyro_y;
@@ -63,13 +90,24 @@ void imu_callback(const leo_msgs::ImuPtr &msg) {
   imu.linear_acceleration.y = msg->accel_y;
   imu.linear_acceleration.z = msg->accel_z;
 
+  for (int i = 0; i < 6; i++) {
+    imu.angular_velocity_covariance[i * 4] =
+        imu_angular_velocity_covariance_diagonal[i];
+    imu.linear_acceleration_covariance[i * 4] =
+        imu_linear_acceleration_covariance_diagonal[i];
+  }
+
   imu_pub.publish(imu);
 }
 
 int main(int argc, char **argv) {
-  ros::init(argc, argv, "firmware_message_parser");
+  ros::init(argc, argv, "firmware_message_converter");
 
   ros::NodeHandle nh;
+  ros::NodeHandle pnh("~");
+
+  load_parameters(pnh);
+
   ros::AsyncSpinner spinner(4);
   spinner.start();
 
