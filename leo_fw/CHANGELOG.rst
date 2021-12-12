@@ -2,6 +2,18 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add Leo Hat firmware binary
+* Update package description
+* Get rid of python2 dependencies
+* Rename core2 firmware binary
+* Allow explicitly specifying board type in flash script
+* Add functions for determining board type and firmware version
+* Use format strings when applicable
+* Add initial Leo Hat support
+* Add firmware_message_parser node
+
 1.2.1 (2021-09-28)
 ------------------
 * Reformat python code with black
