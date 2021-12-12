@@ -2,8 +2,8 @@
 Changelog for package leo_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.0 (2021-12-12)
+------------------
 * Add parameters for firmware_message_converter
 * Add firmware_message_parser node to launch file
 * Add parameters for leo_hat firmware

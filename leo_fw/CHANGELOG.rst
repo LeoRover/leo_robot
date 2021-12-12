@@ -2,8 +2,8 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.0 (2021-12-12)
+------------------
 * Add Leo Hat firmware binary
 * Update package description
 * Get rid of python2 dependencies
