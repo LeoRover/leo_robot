@@ -95,7 +95,7 @@ def flash_firmware(
     if master_online:
         write_flush("--> Checking if rosserial node is active.. ")
 
-        if "/serial_node" in rosnode.get_node_names():
+        if rospy.resolve_name("serial_node") in rosnode.get_node_names():
             print("YES")
             serial_node_active = True
         else:
@@ -140,8 +140,8 @@ def flash_firmware(
     if master_online and serial_node_active:
         write_flush("--> Checking if rosmon service is available.. ")
 
-        if "/rosmon/start_stop" in rosservice.get_service_list():
-            start_stop = rospy.ServiceProxy("/rosmon/start_stop", StartStop)
+        if rospy.resolve_name("rosmon/start_stop") in rosservice.get_service_list():
+            start_stop = rospy.ServiceProxy("rosmon/start_stop", StartStop)
             print("YES")
             rosmon_available = True
         else:
@@ -161,7 +161,6 @@ def flash_firmware(
         )
 
     #####################################################
-
 
     if firmware_path is not None:
         firmware_version = "<unknown>"
