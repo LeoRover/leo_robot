@@ -225,7 +225,9 @@ def flash_firmware(
     if master_online and serial_node_active:
         if rosmon_available:
             write_flush("--> Starting the rosserial node.. ")
-            start_stop("serial_node", "", StartStopRequest.START)
+            start_stop(
+                "serial_node", rospy.get_namespace().rstrip("/"), StartStopRequest.START
+            )
             print("DONE")
         else:
             print("You can now start the rosserial node.")
