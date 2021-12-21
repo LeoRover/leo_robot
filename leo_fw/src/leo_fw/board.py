@@ -8,8 +8,8 @@ from std_srvs.srv import Trigger
 
 
 class BoardType(Enum):
+    LEOCORE = "leocore"
     CORE2 = "core2"
-    LEO_HAT = "leo_hat"
 
     def __str__(self):
         return self.value

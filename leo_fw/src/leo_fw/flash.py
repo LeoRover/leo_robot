@@ -35,7 +35,7 @@ def flash_core2(bootloader_path: str, firmware_path: str):
     print("--> Flashing completed!")
 
 
-def flash_leo_hat(firmware_path: str):
+def flash_leocore(firmware_path: str):
     print("--> Disabling flash read/write protections")
     subprocess.check_call("stm32loader -c rpi -f F4 -u -W", shell=True)
 
@@ -155,8 +155,8 @@ def flash_firmware(
 
         board_type = prompt_options(
             [
+                ("LeoCore", BoardType.LEOCORE),
                 ("Husarion CORE2", BoardType.CORE2),
-                ("Leo Hat", BoardType.LEO_HAT),
             ]
         )
 
@@ -167,7 +167,7 @@ def flash_firmware(
     else:
         if board_type == BoardType.CORE2:
             firmware_version = "1.2.0"
-        elif board_type == BoardType.LEO_HAT:
+        elif board_type == BoardType.LEOCORE:
             firmware_version = "1.0.0"
 
     print(f"Current firmware version: {current_firmware_version}")
@@ -211,14 +211,14 @@ def flash_firmware(
 
         flash_core2(bootloader_path, firmware_path)
 
-    elif board_type == BoardType.LEO_HAT:
+    elif board_type == BoardType.LEOCORE:
         if firmware_path is None:
             firmware_path = os.path.join(
                 rospkg.RosPack().get_path("leo_fw"),
-                "firmware/leo_hat_firmware.bin",
+                "firmware/leocore_firmware.bin",
             )
 
-        flash_leo_hat(firmware_path)
+        flash_leocore(firmware_path)
 
     #####################################################
 
