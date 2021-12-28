@@ -2,8 +2,8 @@
 Changelog for package leo_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.1 (2021-12-28)
+------------------
 * Change imu frame_id to imu_frame
 
 2.0.0 (2021-12-12)
