@@ -2,6 +2,10 @@
 Changelog for package leo_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Change imu frame_id to imu_frame
+
 2.0.0 (2021-12-12)
 ------------------
 * Add parameters for firmware_message_converter

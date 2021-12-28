@@ -2,6 +2,12 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update leocore firmware to version 1.0.1
+* Change the new board name to LeoCore (codename leocore)
+* Make the flashing scripts work when run under ROS namespace
+
 2.0.0 (2021-12-12)
 ------------------
 * Add Leo Hat firmware binary
