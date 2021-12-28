@@ -1,6 +1,6 @@
 robot_frame_id: base_link
 odom_frame_id: odom
-imu_frame_id: imu
+imu_frame_id: imu_frame
 
 wheel_joint_names:
   [wheel_FL_joint, wheel_RL_joint, wheel_FR_joint, wheel_RR_joint]
