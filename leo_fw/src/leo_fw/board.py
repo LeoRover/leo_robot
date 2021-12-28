@@ -21,10 +21,10 @@ def determine_board() -> Optional[BoardType]:
     if rospy.resolve_name("firmware/get_board_type") in services:
         get_board_type = rospy.ServiceProxy("firmware/get_board_type", Trigger)
         type_str = get_board_type().message
-        if type_str == "core2":
+        if type_str == str(BoardType.CORE2):
             return BoardType.CORE2
-        elif type_str == "leo_hat":
-            return BoardType.LEO_HAT
+        elif type_str == str(BoardType.LEOCORE):
+            return BoardType.LEOCORE
 
     # Support legacy firmware
     if rospy.resolve_name("core2/get_firmware_version") in services:
