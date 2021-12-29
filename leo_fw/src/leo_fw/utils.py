@@ -58,7 +58,7 @@ def prompt_options(options: list[tuple[str, Any]], default: int = 1) -> str:
     while True:
         input_raw = input(f"Your selection [{default}]: ")
         if input_raw == "":
-            selected_nr = default
+            selected_nr = default - 1
         else:
             selected_nr = int(input_raw) - 1
         if 0 <= selected_nr < len(options):
