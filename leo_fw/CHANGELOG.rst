@@ -2,6 +2,11 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update leocore firmware to version 1.0.2
+* Fix default selection in board prompt
+
 2.0.1 (2021-12-28)
 ------------------
 * Update leocore firmware to version 1.0.1
