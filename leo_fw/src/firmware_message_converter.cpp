@@ -48,9 +48,9 @@ void load_parameters(ros::NodeHandle &pnh) {
                imu_linear_acceleration_covariance_diagonal);
   pnh.getParam("tf_frame_prefix", tf_frame_prefix);
   
-  robot_frame_id = frame_prefix + robot_frame_id;
-  odom_frame_id = frame_prefix + odom_frame_id;
-  imu_frame_id = frame_prefix + imu_frame_id;
+  robot_frame_id = tf_frame_prefix + robot_frame_id;
+  odom_frame_id = tf_frame_prefix + odom_frame_id;
+  imu_frame_id = tf_frame_prefix + imu_frame_id;
 }
 
 void wheel_states_callback(const leo_msgs::WheelStatesPtr &msg) {
