@@ -33,6 +33,7 @@ std::vector<double> imu_angular_velocity_covariance_diagonal = {
     0.000001, 0.000001, 0.00001};
 std::vector<double> imu_linear_acceleration_covariance_diagonal = {0.001, 0.001,
                                                                    0.001};
+std::string frame_prefix = "";                                                                   
 
 void load_parameters(ros::NodeHandle &pnh) {
   pnh.getParam("robot_frame_id", robot_frame_id);
@@ -45,6 +46,13 @@ void load_parameters(ros::NodeHandle &pnh) {
                imu_angular_velocity_covariance_diagonal);
   pnh.getParam("imu_linear_acceleration_covariance_diagonal",
                imu_linear_acceleration_covariance_diagonal);
+  pnh.getParam("frame_prefix", frame_prefix);
+  
+  if(frame_prefix != "") {
+    robot_frame_id = frame_prefix + robot_frame_id;
+    odom_frame_id = frame_prefix + odom_frame_id;
+    imu_frame_id = frame_prefix + imu_frame_id;
+  }
 }
 
 void wheel_states_callback(const leo_msgs::WheelStatesPtr &msg) {
