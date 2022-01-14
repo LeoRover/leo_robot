@@ -45,6 +45,7 @@
         type="firmware_message_converter">
     <rosparam command="load" 
               file="$(find leo_bringup)/config/firmware_message_converter.yaml"/>
+    <param name="tf_frame_prefix" value="$(arg tf_frame_prefix)">
   </node>
 
   <node name="leo_system"
