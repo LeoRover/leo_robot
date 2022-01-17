@@ -20,8 +20,7 @@ def shutdownCallback(x):
 def publishNamespace():
     namespace_pub = rospy.Publisher("ros_namespace", String, queue_size=1, latch=True)
     namespace = rospy.get_namespace()
-    msg = "" if namespace == None else str(namespace)
-    namespace_pub.publish(msg)
+    namespace_pub.publish(namespace)
 
 
 try:
