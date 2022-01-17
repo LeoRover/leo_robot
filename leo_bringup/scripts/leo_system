@@ -6,6 +6,7 @@ import os
 from std_msgs.msg import Empty
 from std_msgs.msg import String
 
+
 def rebootCallback(x):
     rospy.loginfo("Reboot command invoked")
     os.system("shutdown -r now")
@@ -15,9 +16,10 @@ def shutdownCallback(x):
     rospy.loginfo("Shutdown command invoked")
     os.system("shutdown -h now")
 
+
 def publishNamespace():
     namespace_pub = rospy.Publisher("ros_namespace", String, queue_size=1, latch=True)
-    namespace = os.getenv('ROS_NAMESPACE')
+    namespace = rospy.get_namespace()
     msg = "" if namespace == None else str(namespace)
     namespace_pub.publish(msg)
 
