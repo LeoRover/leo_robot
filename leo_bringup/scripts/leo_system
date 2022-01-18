@@ -3,8 +3,8 @@
 import rospy
 import os
 
-
 from std_msgs.msg import Empty
+from std_msgs.msg import String
 
 
 def rebootCallback(x):
@@ -17,11 +17,19 @@ def shutdownCallback(x):
     os.system("shutdown -h now")
 
 
+def publishNamespace():
+    namespace_pub = rospy.Publisher("robot_namespace", String, queue_size=1, latch=True)
+    namespace = rospy.get_namespace()
+    namespace_pub.publish(namespace)
+
+
 try:
     rospy.init_node("leo_system")
     pose_sub = rospy.Subscriber("system/shutdown", Empty, shutdownCallback)
     pose_sub = rospy.Subscriber("system/reboot", Empty, rebootCallback)
     rospy.loginfo("Leo system node started!")
+
+    publishNamespace()
 except rospy.ROSInterruptException as e:
     rospy.logerr(e)
 
