@@ -2,8 +2,8 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.3 (2022-01-18)
+------------------
 * Fix some problems reported by catkin_lint
 * Add tf_frame_prefix to firmware message converter (`#4 <https://github.com/LeoRover/leo_robot/issues/4>`_)
 * Contributors: Bitterisland6, Błażej Sowa

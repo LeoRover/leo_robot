@@ -2,8 +2,8 @@
 Changelog for package leo_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.3 (2022-01-18)
+------------------
 * Fix some problems reported by catkin_lint
 * Add robot_namespace topic publishing to leo_system node (`#6 <https://github.com/LeoRover/leo_robot/issues/6>`_)
 * Add tf_frame_prefix to firmware message converter (`#4 <https://github.com/LeoRover/leo_robot/issues/4>`_)
