@@ -2,20 +2,20 @@ cmake_minimum_required(VERSION 3.0.2)
 project(leo_fw)
 
 find_package(catkin REQUIRED COMPONENTS
+  leo_msgs
+  nav_msgs
   roscpp
   sensor_msgs
-  nav_msgs
-  leo_msgs
 )
 
 catkin_python_setup()
 
 catkin_package(
   CATKIN_DEPENDS
+    leo_msgs
+    nav_msgs
     roscpp
     sensor_msgs
-    nav_msgs
-    leo_msgs
 )
 
 include_directories(
