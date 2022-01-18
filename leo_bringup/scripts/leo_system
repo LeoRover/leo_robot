@@ -18,7 +18,7 @@ def shutdownCallback(x):
 
 
 def publishNamespace():
-    namespace_pub = rospy.Publisher("ros_namespace", String, queue_size=1, latch=True)
+    namespace_pub = rospy.Publisher("robot_namespace", String, queue_size=1, latch=True)
     namespace = rospy.get_namespace()
     namespace_pub.publish(namespace)
 
