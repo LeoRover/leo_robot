@@ -1,0 +1,3 @@
+battery:
+  voltage_min: 11.0
+  voltage_max: 12.7

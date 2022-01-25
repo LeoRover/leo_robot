@@ -40,6 +40,7 @@ catkin_install_python(
   PROGRAMS 
     scripts/update
     scripts/flash
+    scripts/validate
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

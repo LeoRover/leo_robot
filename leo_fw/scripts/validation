@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+
+import argparse
+
+import leo_fw
+from leo_fw.validate import TestMode, TestHW
+
+parser = argparse.ArgumentParser(description="Test Leo Core controller")
+
+parser.add_argument(
+    "-r",
+    "--record",
+    dest="rosbag",
+    action="store_false",
+    help="record bug file",
+)
+parser.add_argument(
+    "-m",
+    "--mode",
+    dest="mode",
+    type=TestMode,
+    choices=list(TestMode),
+    help="test mode",
+)
+parser.add_argument(
+    "-h",
+    "--hardware",
+    dest="hardware",
+    type=TestHW,
+    choices=list(TestHW),
+    help="hardware to test",
+)
+
+args = parser.parse_args()
+
+leo_fw.validate_hw(
+    rosbag=args.rosbag,
+    test_mode=args.mode,
+    hardware=args.hardware,
+)
+
