@@ -32,7 +32,9 @@ target_link_libraries(firmware_message_converter
 )
 
 install(
-  DIRECTORY firmware
+  DIRECTORY 
+  firmware
+  validate
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
