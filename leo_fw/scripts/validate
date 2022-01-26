@@ -16,15 +16,13 @@ parser.add_argument(
 )
 parser.add_argument(
     "-m",
-    "--mode",
     dest="mode",
     type=TestMode,
     choices=list(TestMode),
     help="test mode",
 )
 parser.add_argument(
-    "-h",
-    "--hardware",
+    "-hw",
     dest="hardware",
     type=TestHW,
     choices=list(TestHW),
@@ -35,7 +33,7 @@ args = parser.parse_args()
 
 leo_fw.validate_hw(
     rosbag=args.rosbag,
-    test_mode=args.mode,
+    mode=args.mode,
     hardware=args.hardware,
 )
 

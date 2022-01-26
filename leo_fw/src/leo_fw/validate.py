@@ -4,6 +4,7 @@ from enum import Enum
 import rospy
 import rosgraph
 import rosnode
+import rospkg
 
 import yaml
 
@@ -11,21 +12,23 @@ from .utils import *
 from .board import BoardType, determine_board, check_firmware_version
 from leo_msgs.msg import Imu, WheelOdom, WheelStates
 
+rospack = rospkg.RosPack()
+
 class TestMode(Enum):
-    GROUND_WHEEL = 1
-    FLOAT_WHEEL = 2
-    NO_WHEEL = 3
+    GROUND_WHEEL = "ground_wheel"
+    FLOAT_WHEEL = "float_wheel"
+    NO_WHEEL = "no_wheel"
 
     def __str__(self):
         return self.value
 
 class TestHW(Enum):
-    HBRIDGE = 1
-    ENCODER = 2
-    TORQUE = 3
-    IMU = 4
-    BATTERY = 5
-    ALL = 0
+    HBRIDGE = "h_bridge"
+    ENCODER = "encoder"
+    TORQUE = "torque"
+    IMU = "imu"
+    BATTERY = "battery"
+    ALL = "all"
     
     def __str__(self):
         return self.value
@@ -44,26 +47,32 @@ def parse_yaml(file_path):
 ###MOTOR ENCODER TEST
 
 def check_encoder():
-    encoder_valid = parse_yaml("../validate/motor.yaml")
+    path = rospack.get_path('leo_fw')
+    encoder_valid = parse_yaml(path+"/validate/motor.yaml")
     print(encoder_valid)
 
 ###MOTOR TORQUE TEST
 
 def check_torque():
-    torque_valid = parse_yaml("../validate/motor.yaml")
+    path = rospack.get_path('leo_fw')
+    torque_valid = parse_yaml(path+"/validate/motor.yaml")
     print(torque_valid)
 
 ###IMU TEST
 
 def check_imu():
-    imu_valid = parse_yaml("../validate/imu.yaml")
+    path = rospack.get_path('leo_fw')
+    imu_valid = parse_yaml(path+"/validate/imu.yaml")
     print(imu_valid)
+    write_flush("--> Checking IMU.. ")
+
     
 
 ###BATTERY TEST
 
 def check_battery():
-    batt_valid = parse_yaml("../validate/battery.yaml")
+    path = rospack.get_path('leo_fw')
+    batt_valid = parse_yaml(path+"/validate/battery.yaml")
     print(batt_valid)
 
 #####################################################
