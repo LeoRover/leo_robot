@@ -1,57 +1,55 @@
-leo_hat:
-    diff_drive:
-        wheel_radius: 0.0625
-        wheel_separation: 0.33
-        angular_velocity_multiplier: 1.91
-        input_timeout: 500
-    battery_min_voltage: 10.0
+# http://wiki.ros.org/leo_fw
 
-core2:
-    robot_frame_id: "base_link"
-    odom_frame_id: "odom"
-    imu_frame_id: "imu"
-    gps_frame_id: "gps"
+firmware:
 
-    diff_drive:
-        wheel_radius: 0.0625
-        wheel_separation: 0.33
-        angular_velocity_multiplier: 1.91
-        input_timeout: 500.0
+  wheels:
+    encoder_resolution: 878.4
+    torque_constant: 1.17647
+    pid: { p: 0.0, i: 0.005, d: 0.0 }
+    pwm_duty_limit: 100.0
 
-    servo_voltage: 2
-    servo1:
-        period: 20000
-        angle_min: -90
-        angle_max: 90
-        width_min: 1000
-        width_max: 2000
-    servo2:
-        period: 20000
-        angle_min: -90
-        angle_max: 90
-        width_min: 1000
-        width_max: 2000
-    servo3:
-        period: 20000
-        angle_min: -90
-        angle_max: 90
-        width_min: 1000
-        width_max: 2000
-    servo4:
-        period: 20000
-        angle_min: -90
-        angle_max: 90
-        width_min: 1000
-        width_max: 2000
-    servo5:
-        period: 20000
-        angle_min: -90
-        angle_max: 90
-        width_min: 1000
-        width_max: 2000
-    servo6:
-        period: 20000
-        angle_min: -90
-        angle_max: 90
-        width_min: 1000
-        width_max: 2000
+  diff_drive:
+    wheel_radius: 0.0625
+    wheel_separation: 0.33
+    angular_velocity_multiplier: 1.91
+    input_timeout: 500
+
+  battery_min_voltage: 10.0
+
+  servo_voltage: 2
+  servo1:
+    period: 20000
+    angle_min: -90
+    angle_max: 90
+    width_min: 1000
+    width_max: 2000
+  servo2:
+    period: 20000
+    angle_min: -90
+    angle_max: 90
+    width_min: 1000
+    width_max: 2000
+  servo3:
+    period: 20000
+    angle_min: -90
+    angle_max: 90
+    width_min: 1000
+    width_max: 2000
+  servo4:
+    period: 20000
+    angle_min: -90
+    angle_max: 90
+    width_min: 1000
+    width_max: 2000
+  servo5:
+    period: 20000
+    angle_min: -90
+    angle_max: 90
+    width_min: 1000
+    width_max: 2000
+  servo6:
+    period: 20000
+    angle_min: -90
+    angle_max: 90
+    width_min: 1000
+    width_max: 2000
