@@ -1,6 +1,7 @@
 from asyncio.constants import ACCEPT_RETRY_DELAY
 from pickle import TRUE
 from posixpath import isabs
+from tabnanny import check
 from typing import Optional
 from enum import Enum
 
@@ -58,10 +59,14 @@ class TestHW(Enum):
         return self.value
 
 def batteryCallback(data):
+    global isNewBatteryData
+    global batteryData
     batteryData = data
     isNewBatteryData = 1
 
 def imuCallback(data): 
+    global isNewImuData
+    global imuData
     imuData = data
     isNewImuData = 1
 
@@ -89,15 +94,34 @@ imu_sub = rospy.Subscriber('firmware/imu', Imu, imuCallback)
 ###WHEEL LOAD TEST
 
 def check_motor_load():
+    global isWheelLoaded
+    global wheelData
 
-    for x in range(1,20):
+    for x in range(1,40):
 
         cmd_pwmFL_pub.publish(Float32(x))
         cmd_pwmFR_pub.publish(Float32(x))
         cmd_pwmRL_pub.publish(Float32(x))
         cmd_pwmRR_pub.publish(Float32(x))
 
-        rospy.sleep(0.1)
+        if (wheelData.velocity[0]>0.1 or
+            wheelData.velocity[1]>0.1 or
+            wheelData.velocity[2]>0.1 or
+            wheelData.velocity[3]>0.1):
+            break
+
+        rospy.sleep(0.3)
+
+    if (x==40):
+        isWheelLoaded = 1
+    else:
+        isWheelLoaded = 0
+
+    print(isWheelLoaded)
+    cmd_pwmFL_pub.publish(Float32(0))
+    cmd_pwmFR_pub.publish(Float32(0))
+    cmd_pwmRL_pub.publish(Float32(0))
+    cmd_pwmRR_pub.publish(Float32(0))
 
 ###MOTOR ENCODER TEST
 
@@ -107,11 +131,15 @@ def check_encoder():
 ###MOTOR TORQUE TEST
 
 def check_torque():
+    check_motor_load()
     print(motor_valid)
 
 ###IMU TEST
 
 def check_imu():
+    global isNewImuData
+    global imuData
+
     msg_cnt = 0
     time_now = time.time()
     imu_valid = parse_yaml(path+"/validate/imu.yaml")
@@ -151,6 +179,8 @@ def check_imu():
 ###BATTERY TEST
 
 def check_battery(): 
+    global isNewBatteryData
+    global batteryData
     msg_cnt = 0
     time_now = time.time()
     batt_valid = parse_yaml(path+"/validate/battery.yaml") 
@@ -290,4 +320,14 @@ def validate_hw(
         check_torque()
   
     #####################################################
+
+    cmd_vel_pub.unregister()
+
+    cmd_pwmFL_pub.unregister()
+
+    cmd_pwmRL_pub.unregister()
+
+    cmd_pwmFR_pub.unregister()
+
+    cmd_pwmRR_pub.unregister()
 
