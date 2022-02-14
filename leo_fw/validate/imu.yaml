@@ -1,5 +1,5 @@
 imu:
-  timeout: 0.05
+  timeout: 0.1
   gyro_x: 0.0
   gyro_y: 0.0
   gyro_z: 0.0
