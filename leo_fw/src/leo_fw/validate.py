@@ -104,18 +104,14 @@ def check_motor_load():
         cmd_pwmRL_pub.publish(Float32(x))
         cmd_pwmRR_pub.publish(Float32(x))
 
-        if (wheelData.velocity[0]>0.1 or
-            wheelData.velocity[1]>0.1 or
-            wheelData.velocity[2]>0.1 or
+        if (wheelData.velocity[0]>0.1 and
+            wheelData.velocity[1]>0.1 and
+            wheelData.velocity[2]>0.1 and
             wheelData.velocity[3]>0.1):
+            isWheelLoaded = 0
             break
 
         rospy.sleep(0.3)
-
-    if (x==40):
-        isWheelLoaded = 1
-    else:
-        isWheelLoaded = 0
 
     print(isWheelLoaded)
     cmd_pwmFL_pub.publish(Float32(0))
