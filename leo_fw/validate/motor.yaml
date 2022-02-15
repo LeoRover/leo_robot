@@ -1,6 +1,23 @@
-motor:
+test1:
   velocity: 1
-  torque: 0.1
-  time: 0.5
+  time: 1
+  offset: 0.2
+test2:
+  velocity: 2
+  time: 1
+  offset: 0.2
+test3:
+  velocity: 3
+  time: 1
+  offset: 0.2
+test4:
+  velocity: 4
+  time: 1
+  offset: 0.2
+test4:
+  velocity: 5
+  time: 1
+  offset: 0.2
+
 
 
