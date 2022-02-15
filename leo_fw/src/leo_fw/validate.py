@@ -1,4 +1,5 @@
 from asyncio.constants import ACCEPT_RETRY_DELAY
+from errno import ELIBBAD
 from pickle import TRUE
 from posixpath import isabs
 from tabnanny import check
@@ -44,7 +45,7 @@ isNewImuData = 0
 isNewWheelData = 0
 isNewBatteryData = 0
 
-isWheelLoaded = 0
+isWheelLoaded = 1
 wheelSpeedLimit = 0.05
 
 class TestHW(Enum):
@@ -66,11 +67,13 @@ def batteryCallback(data):
 
 def imuCallback(data): 
     global isNewImuData
-    global imuData
+    global imuData 
     imuData = data
     isNewImuData = 1
 
 def wheelCallback(data):
+    global wheelData
+    global isNewWheelData
     wheelData = data
     isNewWheelData = 1
 
@@ -85,10 +88,15 @@ cmd_pwmRL_pub = rospy.Publisher('firmware/wheel_RL/cmd_pwm_duty', Float32, queue
 cmd_pwmFR_pub = rospy.Publisher('firmware/wheel_FR/cmd_pwm_duty', Float32, queue_size=1)
 cmd_pwmRR_pub = rospy.Publisher('firmware/wheel_RR/cmd_pwm_duty', Float32, queue_size=1)
 
+cmd_velFL_pub = rospy.Publisher('firmware/wheel_FL/cmd_velocity', Float32, queue_size=1)
+cmd_velRL_pub = rospy.Publisher('firmware/wheel_RL/cmd_velocity', Float32, queue_size=1)
+cmd_velFR_pub = rospy.Publisher('firmware/wheel_FR/cmd_velocity', Float32, queue_size=1)
+cmd_velRR_pub = rospy.Publisher('firmware/wheel_RR/cmd_velocity', Float32, queue_size=1)
+
 ###Subscriber
 
 battery_sub = rospy.Subscriber('firmware/battery', Float32, batteryCallback)
-wheel_sub = rospy.Subscriber('firmware/wheel_state', WheelStates, wheelCallback)
+wheel_sub = rospy.Subscriber('firmware/wheel_states', WheelStates, wheelCallback)
 imu_sub = rospy.Subscriber('firmware/imu', Imu, imuCallback)
 
 ###WHEEL LOAD TEST
@@ -96,22 +104,23 @@ imu_sub = rospy.Subscriber('firmware/imu', Imu, imuCallback)
 def check_motor_load():
     global isWheelLoaded
     global wheelData
+    speed_limit = 1
 
-    for x in range(1,40):
+    for x in range(30):
 
         cmd_pwmFL_pub.publish(Float32(x))
         cmd_pwmFR_pub.publish(Float32(x))
-        cmd_pwmRL_pub.publish(Float32(x))
-        cmd_pwmRR_pub.publish(Float32(x))
+        cmd_pwmRL_pub.publish(Float32(-x))
+        cmd_pwmRR_pub.publish(Float32(-x))
 
-        if (wheelData.velocity[0]>0.1 and
-            wheelData.velocity[1]>0.1 and
-            wheelData.velocity[2]>0.1 and
-            wheelData.velocity[3]>0.1):
+        if (wheelData.velocity[0]>speed_limit or
+            wheelData.velocity[1]<-speed_limit or
+            wheelData.velocity[2]>speed_limit or
+            wheelData.velocity[3]<-speed_limit):
             isWheelLoaded = 0
             break
 
-        rospy.sleep(0.3)
+        rospy.sleep(0.2)
 
     print(isWheelLoaded)
     cmd_pwmFL_pub.publish(Float32(0))
@@ -122,12 +131,35 @@ def check_motor_load():
 ###MOTOR ENCODER TEST
 
 def check_encoder():
-    print(motor_valid)
+    global isWheelLoaded
+    global wheelData
+
+    if (isWheelLoaded==1):
+        wheel_valid = parse_yaml(path+"/validate/motor_load.yaml")
+    elif (isWheelLoaded==0):
+        wheel_valid = parse_yaml(path+"/validate/motor.yaml")
+
+    for x in wheel_valid.items():
+        cmd_velFL_pub.publish(x[1]["velocity"])
+        cmd_velFR_pub.publish(x[1]["velocity"])
+        cmd_velRL_pub.publish(x[1]["velocity"])
+        cmd_velRR_pub.publish(x[1]["velocity"])
+
+        rospy.sleep(x[1]["time"])
+
+        #commper wheel_states to valid data
+
+    cmd_velFL_pub.publish(Float32(0))
+    cmd_velFR_pub.publish(Float32(0))
+    cmd_velRL_pub.publish(Float32(0))
+    cmd_velRR_pub.publish(Float32(0))
+
 
 ###MOTOR TORQUE TEST
 
 def check_torque():
-    check_motor_load()
+
+
     print(motor_valid)
 
 ###IMU TEST
@@ -306,6 +338,10 @@ def validate_hw(
     if (hardware==TestHW.ALL or hardware==TestHW.IMU):
         write_flush("--> IMU validation.. ")
         check_imu()
+
+    if (hardware==TestHW.ALL or hardware==TestHW.TORQUE or hardware==TestHW.ENCODER):
+        write_flush("--> Motors load test.. ")
+        check_motor_load()
 
     if (hardware==TestHW.ALL or hardware==TestHW.ENCODER): 
         write_flush("--> Encoders validation.. ")
