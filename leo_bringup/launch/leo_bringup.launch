@@ -2,11 +2,8 @@
 
   <arg name="upload_description" default="true"/>
   <arg name="tf_frame_prefix" default=""/>
-  <arg name="motors_model" default="$(optenv LEO_MOTORS buehler)"/>
 
   <rosparam command="load" file="$(find leo_bringup)/config/firmware.yaml"/>
-  <rosparam command="load"
-            file="$(find leo_bringup)/config/motors/$(arg motors_model).yaml"/>
     
   <param if="$(arg upload_description)"
          name="robot_description" 
