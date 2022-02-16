@@ -1,12 +1,12 @@
 test1:
-  velocity: 2
+  velocity: 2.0
   time: 1
   offset: 0.2
 test2:
-  velocity: -2
+  velocity: -2.0
   time: 2
   offset: 0.2
 test3:
-  velocity: 1
+  velocity: 1.0
   time: 2
   offset: 0.2

@@ -49,7 +49,6 @@ isWheelLoaded = 1
 wheelSpeedLimit = 0.05
 
 class TestHW(Enum):
-    HBRIDGE = "h_bridge"
     ENCODER = "encoder"
     TORQUE = "torque"
     IMU = "imu"
@@ -113,9 +112,9 @@ def check_motor_load():
         cmd_pwmRL_pub.publish(Float32(-x))
         cmd_pwmRR_pub.publish(Float32(-x))
 
-        if (wheelData.velocity[0]>speed_limit or
-            wheelData.velocity[1]<-speed_limit or
-            wheelData.velocity[2]>speed_limit or
+        if (wheelData.velocity[0]>speed_limit and
+            wheelData.velocity[1]<-speed_limit and
+            wheelData.velocity[2]>speed_limit and
             wheelData.velocity[3]<-speed_limit):
             isWheelLoaded = 0
             break
@@ -134,6 +133,10 @@ def check_encoder():
     global isWheelLoaded
     global wheelData
 
+    is_error = 0
+    is_error_tab = [0,0,0,0]
+    error_msg = "ERROR WHEEL "
+
     if (isWheelLoaded==1):
         wheel_valid = parse_yaml(path+"/validate/motor_load.yaml")
     elif (isWheelLoaded==0):
@@ -147,7 +150,28 @@ def check_encoder():
 
         rospy.sleep(x[1]["time"])
 
+        speed_min = x[1]["velocity"]-x[1]["offset"]
+        speed_max = x[1]["velocity"]+x[1]["offset"]
         #commper wheel_states to valid data
+
+        for i in range (0,4):
+            # print(i)
+            print(wheelData.velocity[i])
+            print(speed_max)
+            print(speed_min)
+            if (speed_min > wheelData.velocity[i] or wheelData.velocity[i] > speed_max):
+                print(i)
+                is_error = 1
+                is_error_tab[i] = 1
+                error_msg += str(i) + " "
+
+        if (is_error == 1):
+            break
+
+    if (is_error == 1):
+        print(error_msg)   
+    else:
+        print("PASSED")
 
     cmd_velFL_pub.publish(Float32(0))
     cmd_velFR_pub.publish(Float32(0))
@@ -192,12 +216,12 @@ def check_imu():
             isNewImuData = 0
             msg_cnt += 1
 
-            if(accel_x-accel_del > imuData.accel_x > accel_x+accel_del or 
-            accel_y-accel_del > imuData.accel_y > accel_y+accel_del or
-            accel_z-accel_del > imuData.accel_z > accel_z+accel_del or
-            gyro_x-gyro_del > imuData.gyro_x > gyro_x+gyro_del or
-            gyro_y-gyro_del > imuData.gyro_y > gyro_y+gyro_del or
-            gyro_z-gyro_del > imuData.gyro_z > gyro_z+gyro_del):
+            if(accel_x-accel_del > imuData.accel_x or imuData.accel_x > accel_x+accel_del or 
+            accel_y-accel_del > imuData.accel_y or imuData.accel_y > accel_y+accel_del or
+            accel_z-accel_del > imuData.accel_z or imuData.accel_z > accel_z+accel_del or
+            gyro_x-gyro_del > imuData.gyro_x or imuData.gyro_x > gyro_x+gyro_del or
+            gyro_y-gyro_del > imuData.gyro_y or imuData.gyro_y > gyro_y+gyro_del or
+            gyro_z-gyro_del > imuData.gyro_z or imuData.gyro_z > gyro_z+gyro_del):
                 print("INVALID DATA")
                 return 0
 

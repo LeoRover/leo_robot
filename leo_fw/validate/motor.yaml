@@ -1,21 +1,21 @@
 test1:
-  velocity: 1
+  velocity: 1.0
   time: 1
   offset: 0.2
 test2:
-  velocity: 2
+  velocity: 2.0
   time: 1
   offset: 0.2
 test3:
-  velocity: 3
+  velocity: 3.0
   time: 1
   offset: 0.2
 test4:
-  velocity: 4
+  velocity: 4.0
   time: 1
   offset: 0.2
 test4:
-  velocity: 5
+  velocity: 5.0
   time: 1
   offset: 0.2
 
