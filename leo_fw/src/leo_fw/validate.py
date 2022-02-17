@@ -58,6 +58,12 @@ class TestHW(Enum):
     def __str__(self):
         return self.value
 
+class bcolors:
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
 def batteryCallback(data):
     global isNewBatteryData
     global batteryData
@@ -120,8 +126,11 @@ def check_motor_load():
             break
 
         rospy.sleep(0.2)
+    if isWheelLoaded:
+        print(bcolors.OKGREEN+"LOAD"+bcolors.ENDC)
+    else:
+        print(bcolors.OKGREEN+"UNLOAD"+bcolors.ENDC)
 
-    print(isWheelLoaded)
     cmd_pwmFL_pub.publish(Float32(0))
     cmd_pwmFR_pub.publish(Float32(0))
     cmd_pwmRL_pub.publish(Float32(0))
@@ -152,31 +161,25 @@ def check_encoder():
 
         speed_min = x[1]["velocity"]-x[1]["offset"]
         speed_max = x[1]["velocity"]+x[1]["offset"]
-        #commper wheel_states to valid data
 
         for i in range (0,4):
-            # print(i)
-            print(wheelData.velocity[i])
-            print(speed_max)
-            print(speed_min)
-            if (speed_min > wheelData.velocity[i] or wheelData.velocity[i] > speed_max):
-                print(i)
+            if (not speed_min < wheelData.velocity[i] < speed_max):
                 is_error = 1
                 is_error_tab[i] = 1
-                error_msg += str(i) + " "
-
-        if (is_error == 1):
-            break
-
-    if (is_error == 1):
-        print(error_msg)   
-    else:
-        print("PASSED")
 
     cmd_velFL_pub.publish(Float32(0))
     cmd_velFR_pub.publish(Float32(0))
     cmd_velRL_pub.publish(Float32(0))
     cmd_velRR_pub.publish(Float32(0))
+
+    if (is_error == 1):
+        error_msg += str(is_error_tab)
+        print(bcolors.FAIL+error_msg+bcolors.ENDC) 
+        return 0  
+    else:
+        print(bcolors.OKGREEN+"PASSED"+bcolors.ENDC)
+        return 1
+
 
 
 ###MOTOR TORQUE TEST
@@ -208,7 +211,7 @@ def check_imu():
 
     while(msg_cnt<50):
         if (time_now+imu_valid["imu"]["timeout"] < time.time()):
-            print("TIMEOUT")
+            print(bcolors.WARNING+"TIMEOUT"+bcolors.ENDC)
             return 0
 
         if (isNewImuData == 1):
@@ -216,16 +219,16 @@ def check_imu():
             isNewImuData = 0
             msg_cnt += 1
 
-            if(accel_x-accel_del > imuData.accel_x or imuData.accel_x > accel_x+accel_del or 
-            accel_y-accel_del > imuData.accel_y or imuData.accel_y > accel_y+accel_del or
-            accel_z-accel_del > imuData.accel_z or imuData.accel_z > accel_z+accel_del or
-            gyro_x-gyro_del > imuData.gyro_x or imuData.gyro_x > gyro_x+gyro_del or
-            gyro_y-gyro_del > imuData.gyro_y or imuData.gyro_y > gyro_y+gyro_del or
-            gyro_z-gyro_del > imuData.gyro_z or imuData.gyro_z > gyro_z+gyro_del):
-                print("INVALID DATA")
+            if not (accel_x-accel_del < imuData.accel_x < imuData.accel_x+accel_del and 
+            accel_y-accel_del < imuData.accel_y  < accel_y+accel_del and
+            accel_z-accel_del < imuData.accel_z  < accel_z+accel_del and
+            gyro_x-gyro_del < imuData.gyro_x  < gyro_x+gyro_del and
+            gyro_y-gyro_del < imuData.gyro_y  < gyro_y+gyro_del and
+            gyro_z-gyro_del < imuData.gyro_z  < gyro_z+gyro_del):
+                print(bcolors.FAIL+"INVALID DATA"+bcolors.ENDC)
                 return 0
 
-    print("PASSED")
+    print(bcolors.OKGREEN+"PASSED"+bcolors.ENDC)
     return 1    
 
 ###BATTERY TEST
@@ -248,13 +251,13 @@ def check_battery():
             msg_cnt += 1
 
             if(batteryData.data <= batt_valid["battery"]["voltage_min"]):
-                print("LOW VOLTAGE")
+                print(bcolors.FAIL+"LOW VOLTAGE"+bcolors.ENDC)
                 return 0
             elif(batteryData.data >= batt_valid["battery"]["voltage_max"]):
-                print("HIGH VOLTAGE")
+                print(bcolors.FAIL+"HIGH VOLTAGE"+bcolors.ENDC)
                 return 0
 
-    print("PASSED")
+    print(bcolors.OKGREEN+"PASSED"+bcolors.ENDC)
     return 1
 
 #####################################################
@@ -347,11 +350,6 @@ def validate_hw(
         print(f"Board type: Core2ROS")
     elif board_type == BoardType.LEOCORE:
         print(f"Board type: LeoCore")
-
-    #####################################################
-
-    if not query_yes_no("Run test?"):
-        return
 
     #####################################################
     
