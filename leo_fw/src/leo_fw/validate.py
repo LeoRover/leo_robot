@@ -19,11 +19,12 @@ from .utils import *
 from .board import BoardType, determine_board, check_firmware_version
 from leo_msgs.msg import Imu, WheelOdom, WheelStates
 from geometry_msgs.msg import Twist
-from std_msgs.msg import Float32 
+from std_msgs.msg import Float32
 
 rospack = rospkg.RosPack()
 
 ###YAML PARSER
+
 
 def parse_yaml(file_path):
     with open(file_path, "r") as stream:
@@ -34,8 +35,9 @@ def parse_yaml(file_path):
 
     return {}
 
-path = rospack.get_path('leo_fw')
-motor_valid = parse_yaml(path+"/validate/motor.yaml")
+
+path = rospack.get_path("leo_fw")
+motor_valid = parse_yaml(path + "/validate/motor.yaml")
 
 imuData = Imu()
 wheelData = WheelStates()
@@ -48,21 +50,24 @@ isNewBatteryData = 0
 isWheelLoaded = 1
 wheelSpeedLimit = 0.05
 
+
 class TestHW(Enum):
     ENCODER = "encoder"
     TORQUE = "torque"
     IMU = "imu"
     BATTERY = "battery"
     ALL = "all"
-    
+
     def __str__(self):
         return self.value
 
+
 class bcolors:
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    FAIL = "\033[91m"
+    ENDC = "\033[0m"
+
 
 def batteryCallback(data):
     global isNewBatteryData
@@ -70,11 +75,13 @@ def batteryCallback(data):
     batteryData = data
     isNewBatteryData = 1
 
-def imuCallback(data): 
+
+def imuCallback(data):
     global isNewImuData
-    global imuData 
+    global imuData
     imuData = data
     isNewImuData = 1
+
 
 def wheelCallback(data):
     global wheelData
@@ -84,27 +91,29 @@ def wheelCallback(data):
 
     #####################################################
 
+
 ###Publisher
 
-cmd_vel_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
+cmd_vel_pub = rospy.Publisher("cmd_vel", Twist, queue_size=1)
 
-cmd_pwmFL_pub = rospy.Publisher('firmware/wheel_FL/cmd_pwm_duty', Float32, queue_size=1)
-cmd_pwmRL_pub = rospy.Publisher('firmware/wheel_RL/cmd_pwm_duty', Float32, queue_size=1)
-cmd_pwmFR_pub = rospy.Publisher('firmware/wheel_FR/cmd_pwm_duty', Float32, queue_size=1)
-cmd_pwmRR_pub = rospy.Publisher('firmware/wheel_RR/cmd_pwm_duty', Float32, queue_size=1)
+cmd_pwmFL_pub = rospy.Publisher("firmware/wheel_FL/cmd_pwm_duty", Float32, queue_size=1)
+cmd_pwmRL_pub = rospy.Publisher("firmware/wheel_RL/cmd_pwm_duty", Float32, queue_size=1)
+cmd_pwmFR_pub = rospy.Publisher("firmware/wheel_FR/cmd_pwm_duty", Float32, queue_size=1)
+cmd_pwmRR_pub = rospy.Publisher("firmware/wheel_RR/cmd_pwm_duty", Float32, queue_size=1)
 
-cmd_velFL_pub = rospy.Publisher('firmware/wheel_FL/cmd_velocity', Float32, queue_size=1)
-cmd_velRL_pub = rospy.Publisher('firmware/wheel_RL/cmd_velocity', Float32, queue_size=1)
-cmd_velFR_pub = rospy.Publisher('firmware/wheel_FR/cmd_velocity', Float32, queue_size=1)
-cmd_velRR_pub = rospy.Publisher('firmware/wheel_RR/cmd_velocity', Float32, queue_size=1)
+cmd_velFL_pub = rospy.Publisher("firmware/wheel_FL/cmd_velocity", Float32, queue_size=1)
+cmd_velRL_pub = rospy.Publisher("firmware/wheel_RL/cmd_velocity", Float32, queue_size=1)
+cmd_velFR_pub = rospy.Publisher("firmware/wheel_FR/cmd_velocity", Float32, queue_size=1)
+cmd_velRR_pub = rospy.Publisher("firmware/wheel_RR/cmd_velocity", Float32, queue_size=1)
 
 ###Subscriber
 
-battery_sub = rospy.Subscriber('firmware/battery', Float32, batteryCallback)
-wheel_sub = rospy.Subscriber('firmware/wheel_states', WheelStates, wheelCallback)
-imu_sub = rospy.Subscriber('firmware/imu', Imu, imuCallback)
+battery_sub = rospy.Subscriber("firmware/battery", Float32, batteryCallback)
+wheel_sub = rospy.Subscriber("firmware/wheel_states", WheelStates, wheelCallback)
+imu_sub = rospy.Subscriber("firmware/imu", Imu, imuCallback)
 
 ###WHEEL LOAD TEST
+
 
 def check_motor_load():
     global isWheelLoaded
@@ -118,38 +127,42 @@ def check_motor_load():
         cmd_pwmRL_pub.publish(Float32(-x))
         cmd_pwmRR_pub.publish(Float32(-x))
 
-        if (wheelData.velocity[0]>speed_limit and
-            wheelData.velocity[1]<-speed_limit and
-            wheelData.velocity[2]>speed_limit and
-            wheelData.velocity[3]<-speed_limit):
+        if (
+            wheelData.velocity[0] > speed_limit
+            and wheelData.velocity[1] < -speed_limit
+            and wheelData.velocity[2] > speed_limit
+            and wheelData.velocity[3] < -speed_limit
+        ):
             isWheelLoaded = 0
             break
 
         rospy.sleep(0.2)
     if isWheelLoaded:
-        print(bcolors.OKGREEN+"LOAD"+bcolors.ENDC)
+        print(bcolors.OKGREEN + "LOAD" + bcolors.ENDC)
     else:
-        print(bcolors.OKGREEN+"UNLOAD"+bcolors.ENDC)
+        print(bcolors.OKGREEN + "UNLOAD" + bcolors.ENDC)
 
     cmd_pwmFL_pub.publish(Float32(0))
     cmd_pwmFR_pub.publish(Float32(0))
     cmd_pwmRL_pub.publish(Float32(0))
     cmd_pwmRR_pub.publish(Float32(0))
 
+
 ###MOTOR ENCODER TEST
+
 
 def check_encoder():
     global isWheelLoaded
     global wheelData
 
     is_error = 0
-    is_error_tab = [0,0,0,0]
+    is_error_tab = [0, 0, 0, 0]
     error_msg = "ERROR WHEEL "
 
-    if (isWheelLoaded==1):
-        wheel_valid = parse_yaml(path+"/validate/motor_load.yaml")
-    elif (isWheelLoaded==0):
-        wheel_valid = parse_yaml(path+"/validate/motor.yaml")
+    if isWheelLoaded == 1:
+        wheel_valid = parse_yaml(path + "/validate/motor_load.yaml")
+    elif isWheelLoaded == 0:
+        wheel_valid = parse_yaml(path + "/validate/motor.yaml")
 
     for x in wheel_valid.items():
         cmd_velFL_pub.publish(x[1]["velocity"])
@@ -159,11 +172,11 @@ def check_encoder():
 
         rospy.sleep(x[1]["time"])
 
-        speed_min = x[1]["velocity"]-x[1]["offset"]
-        speed_max = x[1]["velocity"]+x[1]["offset"]
+        speed_min = x[1]["velocity"] - x[1]["offset"]
+        speed_max = x[1]["velocity"] + x[1]["offset"]
 
-        for i in range (0,4):
-            if (not speed_min < wheelData.velocity[i] < speed_max):
+        for i in range(0, 4):
+            if not speed_min < wheelData.velocity[i] < speed_max:
                 is_error = 1
                 is_error_tab[i] = 1
 
@@ -172,24 +185,25 @@ def check_encoder():
     cmd_velRL_pub.publish(Float32(0))
     cmd_velRR_pub.publish(Float32(0))
 
-    if (is_error == 1):
+    if is_error == 1:
         error_msg += str(is_error_tab)
-        print(bcolors.FAIL+error_msg+bcolors.ENDC) 
-        return 0  
+        print(bcolors.FAIL + error_msg + bcolors.ENDC)
+        return 0
     else:
-        print(bcolors.OKGREEN+"PASSED"+bcolors.ENDC)
+        print(bcolors.OKGREEN + "PASSED" + bcolors.ENDC)
         return 1
-
 
 
 ###MOTOR TORQUE TEST
 
-def check_torque():
 
+def check_torque():
 
     print(motor_valid)
 
+
 ###IMU TEST
+
 
 def check_imu():
     global isNewImuData
@@ -197,7 +211,7 @@ def check_imu():
 
     msg_cnt = 0
     time_now = time.time()
-    imu_valid = parse_yaml(path+"/validate/imu.yaml")
+    imu_valid = parse_yaml(path + "/validate/imu.yaml")
 
     accel_del = imu_valid["imu"]["accel_del"]
     accel_x = imu_valid["imu"]["accel_x"]
@@ -209,58 +223,64 @@ def check_imu():
     gyro_y = imu_valid["imu"]["gyro_y"]
     gyro_z = imu_valid["imu"]["gyro_z"]
 
-    while(msg_cnt<50):
-        if (time_now+imu_valid["imu"]["timeout"] < time.time()):
-            print(bcolors.WARNING+"TIMEOUT"+bcolors.ENDC)
+    while msg_cnt < 50:
+        if time_now + imu_valid["imu"]["timeout"] < time.time():
+            print(bcolors.WARNING + "TIMEOUT" + bcolors.ENDC)
             return 0
 
-        if (isNewImuData == 1):
+        if isNewImuData == 1:
             time_now = time.time()
             isNewImuData = 0
             msg_cnt += 1
 
-            if not (accel_x-accel_del < imuData.accel_x < imuData.accel_x+accel_del and 
-            accel_y-accel_del < imuData.accel_y  < accel_y+accel_del and
-            accel_z-accel_del < imuData.accel_z  < accel_z+accel_del and
-            gyro_x-gyro_del < imuData.gyro_x  < gyro_x+gyro_del and
-            gyro_y-gyro_del < imuData.gyro_y  < gyro_y+gyro_del and
-            gyro_z-gyro_del < imuData.gyro_z  < gyro_z+gyro_del):
-                print(bcolors.FAIL+"INVALID DATA"+bcolors.ENDC)
+            if not (
+                accel_x - accel_del < imuData.accel_x < imuData.accel_x + accel_del
+                and accel_y - accel_del < imuData.accel_y < accel_y + accel_del
+                and accel_z - accel_del < imuData.accel_z < accel_z + accel_del
+                and gyro_x - gyro_del < imuData.gyro_x < gyro_x + gyro_del
+                and gyro_y - gyro_del < imuData.gyro_y < gyro_y + gyro_del
+                and gyro_z - gyro_del < imuData.gyro_z < gyro_z + gyro_del
+            ):
+                print(bcolors.FAIL + "INVALID DATA" + bcolors.ENDC)
                 return 0
 
-    print(bcolors.OKGREEN+"PASSED"+bcolors.ENDC)
-    return 1    
+    print(bcolors.OKGREEN + "PASSED" + bcolors.ENDC)
+    return 1
+
 
 ###BATTERY TEST
 
-def check_battery(): 
+
+def check_battery():
     global isNewBatteryData
     global batteryData
     msg_cnt = 0
     time_now = time.time()
-    batt_valid = parse_yaml(path+"/validate/battery.yaml") 
+    batt_valid = parse_yaml(path + "/validate/battery.yaml")
 
-    while(msg_cnt<50):
-        if (time_now+batt_valid["battery"]["timeout"] < time.time()):
+    while msg_cnt < 50:
+        if time_now + batt_valid["battery"]["timeout"] < time.time():
             print("TIMEOUT")
             return 0
 
-        if (isNewBatteryData == 1):
+        if isNewBatteryData == 1:
             time_now = time.time()
             isNewBatteryData = 0
             msg_cnt += 1
 
-            if(batteryData.data <= batt_valid["battery"]["voltage_min"]):
-                print(bcolors.FAIL+"LOW VOLTAGE"+bcolors.ENDC)
+            if batteryData.data <= batt_valid["battery"]["voltage_min"]:
+                print(bcolors.FAIL + "LOW VOLTAGE" + bcolors.ENDC)
                 return 0
-            elif(batteryData.data >= batt_valid["battery"]["voltage_max"]):
-                print(bcolors.FAIL+"HIGH VOLTAGE"+bcolors.ENDC)
+            elif batteryData.data >= batt_valid["battery"]["voltage_max"]:
+                print(bcolors.FAIL + "HIGH VOLTAGE" + bcolors.ENDC)
                 return 0
 
-    print(bcolors.OKGREEN+"PASSED"+bcolors.ENDC)
+    print(bcolors.OKGREEN + "PASSED" + bcolors.ENDC)
     return 1
 
+
 #####################################################
+
 
 def validate_hw(
     hardware: Optional[TestHW] = TestHW.ALL,
@@ -312,7 +332,6 @@ def validate_hw(
         else:
             print("FAIL")
 
-
     #####################################################
 
     current_firmware_version = "<unknown>"
@@ -352,27 +371,31 @@ def validate_hw(
         print(f"Board type: LeoCore")
 
     #####################################################
-    
-    if (hardware==TestHW.ALL or hardware==TestHW.BATTERY):
+
+    if hardware == TestHW.ALL or hardware == TestHW.BATTERY:
         write_flush("--> Battery validation.. ")
         check_battery()
-    
-    if (hardware==TestHW.ALL or hardware==TestHW.IMU):
+
+    if hardware == TestHW.ALL or hardware == TestHW.IMU:
         write_flush("--> IMU validation.. ")
         check_imu()
 
-    if (hardware==TestHW.ALL or hardware==TestHW.TORQUE or hardware==TestHW.ENCODER):
+    if (
+        hardware == TestHW.ALL
+        or hardware == TestHW.TORQUE
+        or hardware == TestHW.ENCODER
+    ):
         write_flush("--> Motors load test.. ")
         check_motor_load()
 
-    if (hardware==TestHW.ALL or hardware==TestHW.ENCODER): 
+    if hardware == TestHW.ALL or hardware == TestHW.ENCODER:
         write_flush("--> Encoders validation.. ")
         check_encoder()
 
-    if (hardware==TestHW.ALL or hardware==TestHW.TORQUE):
+    if hardware == TestHW.ALL or hardware == TestHW.TORQUE:
         write_flush("--> Torque sensors validation.. ")
         check_torque()
-  
+
     #####################################################
 
     cmd_vel_pub.unregister()
@@ -384,4 +407,3 @@ def validate_hw(
     cmd_pwmFR_pub.unregister()
 
     cmd_pwmRR_pub.unregister()
-
