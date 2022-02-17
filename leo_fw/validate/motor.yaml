@@ -12,12 +12,9 @@ test3:
   offset: 0.2
 test4:
   velocity: 4.0
-  time: 1
+  time: 2
   offset: 0.2
-test4:
-  velocity: 5.0
-  time: 1
-  offset: 0.2
+
 
 
 
