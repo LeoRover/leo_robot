@@ -3,7 +3,7 @@
 import argparse
 
 import leo_fw
-from leo_fw.validate import TestHW
+from leo_fw.test_hw import TestHW
 
 parser = argparse.ArgumentParser(description="Test Leo Core controller")
 
@@ -19,12 +19,13 @@ parser.add_argument(
     dest="hardware",
     type=TestHW,
     choices=list(TestHW),
+    default="all",
     help="hardware to test",
 )
 
 args = parser.parse_args()
 
-leo_fw.validate_hw(
+leo_fw.test_hw(
     rosbag=args.rosbag,
     hardware=args.hardware,
 )

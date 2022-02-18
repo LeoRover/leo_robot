@@ -34,7 +34,7 @@ target_link_libraries(firmware_message_converter
 install(
   DIRECTORY 
   firmware
-  validate
+  test_data
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
@@ -42,7 +42,7 @@ catkin_install_python(
   PROGRAMS 
     scripts/update
     scripts/flash
-    scripts/validate
+    scripts/test_hw
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
