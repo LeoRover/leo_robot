@@ -1,0 +1,24 @@
+test1:
+  pwm: 10
+  torque: 0.01
+  time: 1
+test2:
+  pwm: 20
+  torque: 0.03
+  time: 1
+test3:
+  pwm: 30 
+  torque: 0.04
+  time: 1
+test4:
+  pwm: 40
+  torque: 0.06
+  time: 1
+test5:
+  pwm: 50
+  torque: 0.08
+  time: 1
+test6:
+  pwm: 60 
+  torque: 0.1
+  time: 1

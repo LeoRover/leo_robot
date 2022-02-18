@@ -1,18 +1,18 @@
 test1:
   velocity: 1.0
-  time: 1
+  time: 2
   offset: 0.2
 test2:
   velocity: 2.0
-  time: 1
+  time: 2
   offset: 0.2
 test3:
   velocity: 3.0
-  time: 1
+  time: 2
   offset: 0.2
 test4:
   velocity: 4.0
-  time: 2
+  time: 3
   offset: 0.2
 
 
