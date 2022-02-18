@@ -1,8 +1,3 @@
-from asyncio.constants import ACCEPT_RETRY_DELAY
-from errno import ELIBBAD
-from pickle import TRUE
-from posixpath import isabs
-from tabnanny import check
 from typing import Optional
 from enum import Enum
 
@@ -17,7 +12,7 @@ import yaml
 
 from .utils import *
 from .board import BoardType, determine_board, check_firmware_version
-from leo_msgs.msg import Imu, WheelOdom, WheelStates
+from leo_msgs.msg import Imu, WheelStates
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
 
@@ -36,8 +31,7 @@ def parse_yaml(file_path):
     return {}
 
 
-path = rospack.get_path("leo_fw")
-motor_valid = parse_yaml(path + "/validate/motor.yaml")
+path = rospack.get_path("leo_fw")+"/test_data/"
 
 imuData = Imu()
 wheelData = WheelStates()
@@ -48,7 +42,6 @@ isNewWheelData = 0
 isNewBatteryData = 0
 
 isWheelLoaded = 1
-wheelSpeedLimit = 0.05
 
 
 class TestHW(Enum):
@@ -157,12 +150,11 @@ def check_encoder():
 
     is_error = 0
     is_error_tab = [0, 0, 0, 0]
-    error_msg = "ERROR WHEEL "
 
     if isWheelLoaded == 1:
-        wheel_valid = parse_yaml(path + "/validate/motor_load.yaml")
+        wheel_valid = parse_yaml(path + "encoder_load.yaml")
     elif isWheelLoaded == 0:
-        wheel_valid = parse_yaml(path + "/validate/motor.yaml")
+        wheel_valid = parse_yaml(path + "encoder.yaml")
 
     for x in wheel_valid.items():
         cmd_velFL_pub.publish(x[1]["velocity"])
@@ -186,6 +178,7 @@ def check_encoder():
     cmd_velRR_pub.publish(Float32(0))
 
     if is_error == 1:
+        error_msg = "ERROR WHEEL ENCODER "
         error_msg += str(is_error_tab)
         print(bcolors.FAIL + error_msg + bcolors.ENDC)
         return 0
@@ -198,8 +191,46 @@ def check_encoder():
 
 
 def check_torque():
+    global isWheelLoaded
+    global wheelData
 
-    print(motor_valid)
+    is_error = 0
+    is_error_tab = [0, 0, 0, 0]
+
+    if isWheelLoaded == 1:
+        torque_valid = parse_yaml(path + "torque_load.yaml")
+    elif isWheelLoaded == 0:
+        torque_valid = parse_yaml(path + "torque.yaml")
+
+    for x in torque_valid.items():
+        cmd_pwmFL_pub.publish(x[1]["pwm"])
+        cmd_pwmFR_pub.publish(x[1]["pwm"])
+        cmd_pwmRL_pub.publish(-x[1]["pwm"])
+        cmd_pwmRR_pub.publish(-x[1]["pwm"])
+
+        rospy.sleep(x[1]["time"])
+
+        torque_min = x[1]["torque"]
+        torque_max = x[1]["torque"] + 1
+
+        for i in range(0, 4):
+            if not torque_min < wheelData.torque[i] < torque_max:
+                is_error = 1
+                is_error_tab[i] = 1
+
+    cmd_pwmFL_pub.publish(Float32(0))
+    cmd_pwmFR_pub.publish(Float32(0))
+    cmd_pwmRL_pub.publish(Float32(0))
+    cmd_pwmRR_pub.publish(Float32(0))
+
+    if is_error == 1:
+        error_msg = "ERROR WHEEL TORQUE "
+        error_msg += str(is_error_tab)
+        print(bcolors.FAIL + error_msg + bcolors.ENDC)
+        return 0
+    else:
+        print(bcolors.OKGREEN + "PASSED" + bcolors.ENDC)
+        return 1
 
 
 ###IMU TEST
@@ -211,7 +242,7 @@ def check_imu():
 
     msg_cnt = 0
     time_now = time.time()
-    imu_valid = parse_yaml(path + "/validate/imu.yaml")
+    imu_valid = parse_yaml(path + "imu.yaml")
 
     accel_del = imu_valid["imu"]["accel_del"]
     accel_x = imu_valid["imu"]["accel_x"]
@@ -234,7 +265,7 @@ def check_imu():
             msg_cnt += 1
 
             if not (
-                accel_x - accel_del < imuData.accel_x < imuData.accel_x + accel_del
+                accel_x - accel_del < imuData.accel_x < accel_x + accel_del
                 and accel_y - accel_del < imuData.accel_y < accel_y + accel_del
                 and accel_z - accel_del < imuData.accel_z < accel_z + accel_del
                 and gyro_x - gyro_del < imuData.gyro_x < gyro_x + gyro_del
@@ -256,7 +287,7 @@ def check_battery():
     global batteryData
     msg_cnt = 0
     time_now = time.time()
-    batt_valid = parse_yaml(path + "/validate/battery.yaml")
+    batt_valid = parse_yaml(path + "battery.yaml")
 
     while msg_cnt < 50:
         if time_now + batt_valid["battery"]["timeout"] < time.time():
@@ -282,21 +313,21 @@ def check_battery():
 #####################################################
 
 
-def validate_hw(
-    hardware: Optional[TestHW] = TestHW.ALL,
+def test_hw(
+    hardware=TestHW.ALL,
     rosbag: bool = False,
 ):
 
-    write_flush("--> Checking if ROS Master is online.. ")
+    write_flush("--> Checking if rosserial node is active.. ")
 
-    if rosgraph.is_master_online():
+    if rospy.resolve_name("serial_node") in rosnode.get_node_names():
         print("YES")
-        master_online = True
+        serial_node_active = True
     else:
         print("NO")
-        master_online = False
+        serial_node_active = False
         print(
-            "ROS Master is not running. "
+            "Rosserial node is not active. "
             "Will not be able to validate hardware."
             "Try to restart leo.service or reboot system."
         )
@@ -304,25 +335,7 @@ def validate_hw(
 
     #####################################################
 
-    if master_online:
-        write_flush("--> Checking if rosserial node is active.. ")
-
-        if rospy.resolve_name("serial_node") in rosnode.get_node_names():
-            print("YES")
-            serial_node_active = True
-        else:
-            print("NO")
-            serial_node_active = False
-            print(
-                "Rosserial node is not active. "
-                "Will not be able to validate hardware."
-                "Try to restart leo.service or reboot system."
-            )
-            return
-
-    #####################################################
-
-    if master_online and serial_node_active:
+    if serial_node_active:
         write_flush("--> Trying to determine board type.. ")
 
         board_type = determine_board()
@@ -336,7 +349,7 @@ def validate_hw(
 
     current_firmware_version = "<unknown>"
 
-    if master_online and serial_node_active:
+    if serial_node_active:
         write_flush("--> Trying to check the current firmware version.. ")
 
         current_firmware_version = check_firmware_version()
@@ -357,10 +370,10 @@ def validate_hw(
 
     #####################################################
 
-    if master_online and serial_node_active:
+    if serial_node_active:
         write_flush("--> Initializing ROS node.. ")
         rospy.init_node("leo_core_validation", anonymous=True)
-        print("DONE")
+        print("OK")
 
     #####################################################
 
@@ -395,15 +408,3 @@ def validate_hw(
     if hardware == TestHW.ALL or hardware == TestHW.TORQUE:
         write_flush("--> Torque sensors validation.. ")
         check_torque()
-
-    #####################################################
-
-    cmd_vel_pub.unregister()
-
-    cmd_pwmFL_pub.unregister()
-
-    cmd_pwmRL_pub.unregister()
-
-    cmd_pwmFR_pub.unregister()
-
-    cmd_pwmRR_pub.unregister()
