@@ -1,6 +1,7 @@
 name: CI
 
 on:
+  workflow_dispatch:
   push:
     branches:
     - master
@@ -13,6 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       UPSTREAM_WORKSPACE: 'github:LeoRover/leo_common#master'
+      CLANG_FORMAT_CHECK: 'file'
+      BLACK_CHECK: true
+      PYLINT_CHECK: true
+      CATKIN_LINT: true
     strategy:
       matrix:
         env:
