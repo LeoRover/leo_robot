@@ -16,14 +16,22 @@ jobs:
       matrix:
         ROS_DISTRO: [noetic]
         ROS_REPO: [testing, main]
+    env: ${{ matrix.env }}
     steps:
-      - uses: actions/checkout@v1
-      - uses: 'ros-industrial/industrial_ci@master'
+      - name: Checkout repo
+        uses: actions/checkout@v1
+      - name: Source tests
+        uses: 'ros-industrial/industrial_ci@master'
         env:
-          ROS_DISTRO: ${{ matrix.ROS_DISTRO }}
-          ROS_REPO: ${{ matrix.ROS_REPO }}
           UPSTREAM_WORKSPACE: 'github:LeoRover/leo_common#master'
-          CLANG_FORMAT_CHECK: 'file'
-          BLACK_CHECK: true
-          PYLINT_CHECK: true
+          CLANG_TIDY: true
           CATKIN_LINT: true
+          PYLINT_CHECK: true
+      - name: clang-format check
+        uses: 'ros-industrial/industrial_ci@master'
+        env:
+          CLANG_FORMAT_CHECK: 'file'
+      - name: black check
+        uses: 'ros-industrial/industrial_ci@master'
+        env:
+          BLACK_CHECK: true
