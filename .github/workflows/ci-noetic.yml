@@ -30,6 +30,7 @@ jobs:
           CATKIN_LINT: true
           PYLINT_CHECK: true
           PYLINT_ARGS: '--rcfile=src/leo_robot/.pylintrc'
+          PYLINT_EXCLUDE: 'setup.py'
       - name: clang-format check
         uses: 'ros-industrial/industrial_ci@master'
         env:
