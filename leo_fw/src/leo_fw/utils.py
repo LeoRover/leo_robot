@@ -3,6 +3,8 @@ from __future__ import annotations
 import sys
 from typing import Any
 
+from whichcraft import which
+
 
 def is_tool(name: str) -> bool:
     """!
@@ -10,8 +12,6 @@ def is_tool(name: str) -> bool:
     @param name Name of the executable
     @return True if executable exists, False otherwise
     """
-    from whichcraft import which
-
     return which(name) is not None
 
 
@@ -45,10 +45,9 @@ def query_yes_no(question: str, default: str = "yes") -> bool:
         choice = input().lower()
         if default is not None and choice == "":
             return valid[default]
-        elif choice in valid:
+        if choice in valid:
             return valid[choice]
-        else:
-            print("Please respond with 'yes' or 'no' " "(or 'y' or 'n').")
+        print("Please respond with 'yes' or 'no' " "(or 'y' or 'n').")
 
 
 def prompt_options(options: list[tuple[str, Any]], default: int = 1) -> str:
@@ -64,5 +63,4 @@ def prompt_options(options: list[tuple[str, Any]], default: int = 1) -> str:
         if 0 <= selected_nr < len(options):
             _, selected = options[selected_nr]
             return selected
-        else:
-            print(f"Please select a valid option")
+        print(f"Please select a valid option")

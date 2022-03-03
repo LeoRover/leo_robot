@@ -28,6 +28,8 @@ jobs:
           UPSTREAM_WORKSPACE: 'github:LeoRover/leo_common#master'
           CLANG_TIDY: true
           CATKIN_LINT: true
+          PYLINT_CHECK: true
+          PYLINT_ARGS: '--rcfile=src/leo_robot/.pylintrc'
       - name: clang-format check
         uses: 'ros-industrial/industrial_ci@master'
         env:

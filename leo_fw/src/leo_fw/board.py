@@ -23,7 +23,7 @@ def determine_board() -> Optional[BoardType]:
         type_str = get_board_type().message
         if type_str == str(BoardType.CORE2):
             return BoardType.CORE2
-        elif type_str == str(BoardType.LEOCORE):
+        if type_str == str(BoardType.LEOCORE):
             return BoardType.LEOCORE
 
     # Support legacy firmware
