@@ -12,14 +12,13 @@ jobs:
   industrial_ci:
     runs-on: ubuntu-latest
     env:
-      UPSTREAM_WORKSPACE: 'github:LeoRover/leo_common'
+      UPSTREAM_WORKSPACE: 'github:LeoRover/leo_common#master'
     strategy:
       matrix:
         env:
           - {ROS_DISTRO: noetic, ROS_REPO: testing}
           - {ROS_DISTRO: noetic, ROS_REPO: main}
     steps:
-      - run: sudo apt-get update -qq && sudo apt-get upgrade
       - uses: actions/checkout@v1
       - uses: 'ros-industrial/industrial_ci@master'
         env: ${{matrix.env}}
