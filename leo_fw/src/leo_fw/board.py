@@ -42,9 +42,7 @@ def check_firmware_version() -> str:
         )
     # Support legacy firmware
     elif rospy.resolve_name("core2/get_firmware_version") in services:
-        get_firmware_version = rospy.ServiceProxy(
-            "core2/get_firmware_version", Trigger
-        )
+        get_firmware_version = rospy.ServiceProxy("core2/get_firmware_version", Trigger)
     else:
         return "<unknown>"
 
