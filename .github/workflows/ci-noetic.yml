@@ -12,18 +12,18 @@ on:
 jobs:
   industrial_ci:
     runs-on: ubuntu-latest
-    env:
-      UPSTREAM_WORKSPACE: 'github:LeoRover/leo_common#master'
-      CLANG_FORMAT_CHECK: 'file'
-      BLACK_CHECK: true
-      PYLINT_CHECK: true
-      CATKIN_LINT: true
     strategy:
       matrix:
-        env:
-          - {ROS_DISTRO: noetic, ROS_REPO: testing}
-          - {ROS_DISTRO: noetic, ROS_REPO: main}
+        ROS_DISTRO: [noetic]
+        ROS_REPO: [testing, main]
     steps:
       - uses: actions/checkout@v1
       - uses: 'ros-industrial/industrial_ci@master'
-        env: ${{matrix.env}}
+        env:
+          ROS_DISTRO: ${{ matrix.ROS_DISTRO }}
+          ROS_REPO: ${{ matrix.ROS_REPO }}
+          UPSTREAM_WORKSPACE: 'github:LeoRover/leo_common#master'
+          CLANG_FORMAT_CHECK: 'file'
+          BLACK_CHECK: true
+          PYLINT_CHECK: true
+          CATKIN_LINT: true
