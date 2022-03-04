@@ -33,7 +33,7 @@ std::vector<double> imu_angular_velocity_covariance_diagonal = {
     0.000001, 0.000001, 0.00001};
 std::vector<double> imu_linear_acceleration_covariance_diagonal = {0.001, 0.001,
                                                                    0.001};
-std::string tf_frame_prefix = "";                                                                   
+std::string tf_frame_prefix = "";
 
 void load_parameters(ros::NodeHandle &pnh) {
   pnh.getParam("robot_frame_id", robot_frame_id);
@@ -47,7 +47,7 @@ void load_parameters(ros::NodeHandle &pnh) {
   pnh.getParam("imu_linear_acceleration_covariance_diagonal",
                imu_linear_acceleration_covariance_diagonal);
   pnh.getParam("tf_frame_prefix", tf_frame_prefix);
-  
+
   robot_frame_id = tf_frame_prefix + robot_frame_id;
   odom_frame_id = tf_frame_prefix + odom_frame_id;
   imu_frame_id = tf_frame_prefix + imu_frame_id;
@@ -127,22 +127,25 @@ int main(int argc, char **argv) {
   while (ros::ok()) {
     // Shutdown inactive topics
     if (joint_states_advertised && wheel_states_sub.getNumPublishers() == 0) {
-      ROS_INFO("firmware/wheel_states topic no longer has any publishers. "
-               "Shutting down joint_states publisher.");
+      ROS_INFO(
+          "firmware/wheel_states topic no longer has any publishers. "
+          "Shutting down joint_states publisher.");
       wheel_states_sub.shutdown();
       joint_states_pub.shutdown();
       joint_states_advertised = false;
     }
     if (wheel_odom_advertised && wheel_odom_sub.getNumPublishers() == 0) {
-      ROS_INFO("firmware/wheel_odom topic no longer has any publishers. "
-               "Shutting down wheel_odom_with_covariance publisher.");
+      ROS_INFO(
+          "firmware/wheel_odom topic no longer has any publishers. "
+          "Shutting down wheel_odom_with_covariance publisher.");
       wheel_odom_sub.shutdown();
       wheel_odom_pub.shutdown();
       wheel_odom_advertised = false;
     }
     if (imu_advertised && imu_sub.getNumPublishers() == 0) {
-      ROS_INFO("firmware/imu topic no longer has any publishers. "
-               "Shutting down imu/data_raw publisher.");
+      ROS_INFO(
+          "firmware/imu topic no longer has any publishers. "
+          "Shutting down imu/data_raw publisher.");
       imu_sub.shutdown();
       imu_pub.shutdown();
       imu_advertised = false;
@@ -156,8 +159,9 @@ int main(int argc, char **argv) {
 
     for (auto &topic : topics) {
       if (!joint_states_advertised && topic.name == wheel_states_topic) {
-        ROS_INFO("Detected firmware/wheel_states topic advertised. "
-                 "Advertising joint_states topic.");
+        ROS_INFO(
+            "Detected firmware/wheel_states topic advertised. "
+            "Advertising joint_states topic.");
         joint_states_pub =
             nh.advertise<sensor_msgs::JointState>("joint_states", 10);
         wheel_states_sub =
@@ -165,8 +169,9 @@ int main(int argc, char **argv) {
         joint_states_advertised = true;
       }
       if (!wheel_odom_advertised && topic.name == wheel_odom_topic) {
-        ROS_INFO("Detected firmware/wheel_odom topic advertised. "
-                 "Advertising wheel_odom_with_covariance topic.");
+        ROS_INFO(
+            "Detected firmware/wheel_odom topic advertised. "
+            "Advertising wheel_odom_with_covariance topic.");
         wheel_odom_pub =
             nh.advertise<nav_msgs::Odometry>("wheel_odom_with_covariance", 10);
         wheel_odom_sub =
@@ -174,8 +179,9 @@ int main(int argc, char **argv) {
         wheel_odom_advertised = true;
       }
       if (!imu_advertised && topic.name == imu_topic) {
-        ROS_INFO("Detected firmware/imu topic advertised. "
-                 "Advertising imu/data_raw topic.");
+        ROS_INFO(
+            "Detected firmware/imu topic advertised. "
+            "Advertising imu/data_raw topic.");
         imu_pub = nh.advertise<sensor_msgs::Imu>("imu/data_raw", 10);
         imu_sub = nh.subscribe("firmware/imu", 5, imu_callback);
         imu_advertised = true;

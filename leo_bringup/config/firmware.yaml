@@ -1,7 +1,6 @@
 # http://wiki.ros.org/leo_fw
 
 firmware:
-
   wheels:
     encoder_resolution: 878.4
     torque_constant: 1.17647
@@ -16,6 +15,7 @@ firmware:
 
   battery_min_voltage: 10.0
 
+  # Servos are only supported by the CORE2 board
   servo_voltage: 2
   servo1:
     period: 20000
@@ -53,3 +53,18 @@ firmware:
     angle_max: 90
     width_min: 1000
     width_max: 2000
+
+# These parameters are set only to support older versions (pre 1.1.0) of LeoCore firmware.
+# They will be removed in the future.
+leo_hat:
+  motors:
+    encoder_resolution: 878.4
+    torque_constant: 1.17647
+    pid: { p: 0.0, i: 0.005, d: 0.0 }
+    power_limit: 1000.0
+  diff_drive:
+    wheel_radius: 0.0625
+    wheel_separation: 0.33
+    angular_velocity_multiplier: 1.91
+    input_timeout: 500
+  battery_min_voltage: 10.0

@@ -11,7 +11,7 @@ import rosservice
 
 from rosmon_msgs.srv import StartStop, StartStopRequest
 
-from .utils import *
+from .utils import is_tool, write_flush, query_yes_no, prompt_options
 from .board import BoardType, determine_board, check_firmware_version
 
 
@@ -48,6 +48,7 @@ def flash_leocore(firmware_path: str):
     print("--> Flashing completed!")
 
 
+# pylint: disable=too-many-branches,too-many-statements
 def flash_firmware(
     firmware_path: Optional[str] = None,
     board_type: Optional[BoardType] = None,
