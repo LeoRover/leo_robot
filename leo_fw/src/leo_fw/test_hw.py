@@ -44,7 +44,7 @@ isNewBatteryData = 0
 isWheelLoaded = 1
 
 
-class TestHW(Enum):
+class TestMode(Enum):
     ENCODER = "encoder"
     TORQUE = "torque"
     IMU = "imu"
@@ -314,7 +314,7 @@ def check_battery():
 
 
 def test_hw(
-    hardware=TestHW.ALL,
+    hardware=TestMode().ALL,
     rosbag: bool = False,
 ):
 
@@ -385,26 +385,26 @@ def test_hw(
 
     #####################################################
 
-    if hardware == TestHW.ALL or hardware == TestHW.BATTERY:
+    if hardware == TestMode.ALL or hardware == TestMode.BATTERY:
         write_flush("--> Battery validation.. ")
         check_battery()
 
-    if hardware == TestHW.ALL or hardware == TestHW.IMU:
+    if hardware == TestMode.ALL or hardware == TestMode.IMU:
         write_flush("--> IMU validation.. ")
         check_imu()
 
     if (
-        hardware == TestHW.ALL
-        or hardware == TestHW.TORQUE
-        or hardware == TestHW.ENCODER
+        hardware == TestMode.ALL
+        or hardware == TestMode.TORQUE
+        or hardware == TestMode.ENCODER
     ):
         write_flush("--> Motors load test.. ")
         check_motor_load()
 
-    if hardware == TestHW.ALL or hardware == TestHW.ENCODER:
+    if hardware == TestMode.ALL or hardware == TestMode.ENCODER:
         write_flush("--> Encoders validation.. ")
         check_encoder()
 
-    if hardware == TestHW.ALL or hardware == TestHW.TORQUE:
+    if hardware == TestMode.ALL or hardware == TestMode.TORQUE:
         write_flush("--> Torque sensors validation.. ")
         check_torque()
