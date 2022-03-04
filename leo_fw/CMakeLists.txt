@@ -33,8 +33,8 @@ target_link_libraries(firmware_message_converter
 
 install(
   DIRECTORY 
-  firmware
-  test_data
+    firmware
+    test_data
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
