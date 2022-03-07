@@ -15,7 +15,6 @@ from .utils import write_flush
 from .board import BoardType, determine_board, check_firmware_version
 
 
-
 def parse_yaml(file_path):
     with open(file_path, "r") as stream:
         try:
