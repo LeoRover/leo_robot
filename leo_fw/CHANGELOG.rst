@@ -2,8 +2,8 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.1.1 (2022-03-07)
+------------------
 * Update leocore firmware to version 1.1.2
 
 2.1.0 (2022-03-04)
