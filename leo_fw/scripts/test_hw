@@ -7,13 +7,13 @@ from leo_fw.test_hw import TestMode
 
 parser = argparse.ArgumentParser(description="Test Leo Core controller")
 
-parser.add_argument(
-    "-r",
-    "--record",
-    dest="rosbag",
-    action="store_false",
-    help="record bug file",
-)
+# parser.add_argument(
+#     "-r",
+#     "--record",
+#     dest="rosbag",
+#     action="store_false",
+#     help="record bug file",
+# )
 parser.add_argument(
     "-hw",
     dest="hardware",
@@ -24,9 +24,8 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
+HwTester = leo_fw.HardwareTester()
 
-leo_fw.test_hw(
-    rosbag=args.rosbag,
+HwTester.test_hw(
     hardware=args.hardware,
 )
-
