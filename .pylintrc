@@ -7,3 +7,4 @@ disable=
     unsubscriptable-object, # Gives false positives for typing
     too-many-instance-attributes,
     consider-using-in,
+    duplicate-code
