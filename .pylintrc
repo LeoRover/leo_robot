@@ -4,4 +4,6 @@ disable=
     missing-class-docstring,
     missing-function-docstring,
     bad-continuation, # Doesn't like black formatter
-    unsubscriptable-object # Gives false positives for typing
+    unsubscriptable-object, # Gives false positives for typing
+    too-many-instance-attributes,
+    consider-using-in,
