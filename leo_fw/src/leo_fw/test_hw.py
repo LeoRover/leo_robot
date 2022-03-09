@@ -250,7 +250,7 @@ class HardwareTester:
                     < self.imu_data.accel_y
                     < accel_y + accel_del
                     and accel_z - accel_del
-                    < self.imu_data.accel_z
+                    < abs(self.imu_data.accel_z)
                     < accel_z + accel_del
                     and gyro_x - gyro_del < self.imu_data.gyro_x < gyro_x + gyro_del
                     and gyro_y - gyro_del < self.imu_data.gyro_y < gyro_y + gyro_del
