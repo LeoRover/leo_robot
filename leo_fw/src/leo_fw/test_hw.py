@@ -177,10 +177,10 @@ class HardwareTester:
             error_msg = "ERROR WHEEL ENCODER "
             error_msg += str(is_error_tab)
             print(self.FAIL + error_msg + self.ENDC)
-            return 0
+            return
 
         print(self.OKGREEN + "PASSED" + self.ENDC)
-        return 1
+        return
 
     def check_torque(self):
         is_error = 0
@@ -216,10 +216,10 @@ class HardwareTester:
             error_msg = "ERROR WHEEL TORQUE "
             error_msg += str(is_error_tab)
             print(self.FAIL + error_msg + self.ENDC)
-            return 0
+            return
 
         print(self.OKGREEN + "PASSED" + self.ENDC)
-        return 1
+        return
 
     def check_imu(self):
         msg_cnt = 0
@@ -239,7 +239,7 @@ class HardwareTester:
         while msg_cnt < 50:
             if time_now + imu_valid["imu"]["timeout"] < time.time():
                 print(self.WARNING + "TIMEOUT" + self.ENDC)
-                return 0
+                return
 
             if self.is_new_imu_data == 1:
                 time_now = time.time()
@@ -259,10 +259,10 @@ class HardwareTester:
                     and gyro_z - gyro_del < self.imu_data.gyro_z < gyro_z + gyro_del
                 ):
                     print(self.FAIL + "INVALID DATA" + self.ENDC)
-                    return 0
+                    return
 
         print(self.OKGREEN + "PASSED" + self.ENDC)
-        return 1
+        return
 
     def check_battery(self):
         msg_cnt = 0
@@ -272,7 +272,7 @@ class HardwareTester:
         while msg_cnt < 50:
             if time_now + batt_valid["battery"]["timeout"] < time.time():
                 print(self.WARNING + "TIMEOUT" + self.ENDC)
-                return 0
+                return
 
             if self.is_new_battery_data == 1:
                 time_now = time.time()
@@ -281,13 +281,13 @@ class HardwareTester:
 
                 if self.battery_data.data <= batt_valid["battery"]["voltage_min"]:
                     print(self.FAIL + "LOW VOLTAGE" + self.ENDC)
-                    return 0
+                    return
                 if self.battery_data.data >= batt_valid["battery"]["voltage_max"]:
                     print(self.FAIL + "HIGH VOLTAGE" + self.ENDC)
-                    return 0
+                    return
 
         print(self.OKGREEN + "PASSED" + self.ENDC)
-        return 1
+        return
 
     # pylint: disable=too-many-branches,too-many-statements
     def test_hw(
