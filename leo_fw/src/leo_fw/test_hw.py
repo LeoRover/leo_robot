@@ -359,6 +359,9 @@ class HardwareTester:
             print(f"Board type: Core2ROS")
         elif board_type == BoardType.LEOCORE:
             print(f"Board type: LeoCore")
+        else:
+            print(f"Can not determine board version")
+            return 
 
         #####################################################
 
@@ -366,7 +369,7 @@ class HardwareTester:
             write_flush("--> Battery validation.. ")
             self.check_battery()
 
-        if hardware == TestMode.ALL or hardware == TestMode.IMU:
+        if hardware == TestMode.ALL or hardware == TestMode.IMU and board_type == BoardType.LEOCORE:
             write_flush("--> IMU validation.. ")
             self.check_imu()
 
@@ -382,6 +385,6 @@ class HardwareTester:
             write_flush("--> Encoders validation.. ")
             self.check_encoder()
 
-        if hardware == TestMode.ALL or hardware == TestMode.TORQUE:
+        if hardware == TestMode.ALL or hardware == TestMode.TORQUE and board_type == BoardType.LEOCORE:
             write_flush("--> Torque sensors validation.. ")
             self.check_torque()

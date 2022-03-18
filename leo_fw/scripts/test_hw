@@ -5,7 +5,7 @@ import argparse
 import leo_fw
 from leo_fw.test_hw import TestMode
 
-parser = argparse.ArgumentParser(description="Test Leo Core controller")
+parser = argparse.ArgumentParser(description="Test controller controller")
 
 parser.add_argument(
     "-hw",
