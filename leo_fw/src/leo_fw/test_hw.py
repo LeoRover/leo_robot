@@ -150,16 +150,18 @@ class HardwareTester:
         elif self.is_wheel_loaded == 0:
             wheel_valid = parse_yaml(self.path + "encoder.yaml")
 
-        for wheel_test in wheel_valid.items():
-            self.cmd_velfl_pub.publish(wheel_test[1]["velocity"])
-            self.cmd_velfr_pub.publish(wheel_test[1]["velocity"])
-            self.cmd_velrl_pub.publish(wheel_test[1]["velocity"])
-            self.cmd_velrr_pub.publish(wheel_test[1]["velocity"])
+        for wheel_test in wheel_valid['tests']:
+            print(wheel_test)
 
-            rospy.sleep(wheel_test[1]["time"])
+            self.cmd_velfl_pub.publish(wheel_test["velocity"])
+            self.cmd_velfr_pub.publish(wheel_test["velocity"])
+            self.cmd_velrl_pub.publish(wheel_test["velocity"])
+            self.cmd_velrr_pub.publish(wheel_test["velocity"])
 
-            speed_min = wheel_test[1]["velocity"] - wheel_test[1]["offset"]
-            speed_max = wheel_test[1]["velocity"] + wheel_test[1]["offset"]
+            rospy.sleep(wheel_test["time"])
+
+            speed_min = wheel_test["velocity"] - wheel_test["offset"]
+            speed_max = wheel_test["velocity"] + wheel_test["offset"]
 
             for i in range(0, 4):
                 if not speed_min < self.wheel_data.velocity[i] < speed_max:
@@ -189,16 +191,16 @@ class HardwareTester:
         elif self.is_wheel_loaded == 0:
             torque_valid = parse_yaml(self.path + "torque.yaml")
 
-        for torque_test in torque_valid.items():
-            self.cmd_pwmfl_pub.publish(torque_test[1]["pwm"])
-            self.cmd_pwmfr_pub.publish(torque_test[1]["pwm"])
-            self.cmd_pwmrl_pub.publish(-torque_test[1]["pwm"])
-            self.cmd_pwmrr_pub.publish(-torque_test[1]["pwm"])
+        for torque_test in torque_valid['tests']:
+            self.cmd_pwmfl_pub.publish(torque_test["pwm"])
+            self.cmd_pwmfr_pub.publish(torque_test["pwm"])
+            self.cmd_pwmrl_pub.publish(-torque_test["pwm"])
+            self.cmd_pwmrr_pub.publish(-torque_test["pwm"])
 
-            rospy.sleep(torque_test[1]["time"])
+            rospy.sleep(torque_test["time"])
 
-            torque_min = torque_test[1]["torque"]
-            torque_max = torque_test[1]["torque"] + 1
+            torque_min = torque_test["torque"]
+            torque_max = torque_test["torque"] + 1
 
             for i in range(0, 4):
                 if not torque_min < self.wheel_data.torque[i] < torque_max:
