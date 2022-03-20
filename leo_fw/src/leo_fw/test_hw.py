@@ -13,6 +13,7 @@ from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
 from .utils import write_flush
 from .board import BoardType, determine_board, check_firmware_version
+from .utils import CSIColor
 
 
 def parse_yaml(file_path):
@@ -46,11 +47,6 @@ class HardwareTester:
     imu_data = Imu()
     wheel_data = WheelStates()
     battery_data = Float32()
-
-    OKGREEN = "\033[92m"
-    WARNING = "\033[93m"
-    FAIL = "\033[91m"
-    ENDC = "\033[0m"
 
     def __init__(self):
 
@@ -132,9 +128,9 @@ class HardwareTester:
             rospy.sleep(0.2)
 
         if self.is_wheel_loaded:
-            print(self.OKGREEN + "LOAD" + self.ENDC)
+            print(CSIColor.OKGREEN + "LOAD" + CSIColor.ENDC)
         else:
-            print(self.OKGREEN + "UNLOAD" + self.ENDC)
+            print(CSIColor.OKGREEN + "UNLOAD" + CSIColor.ENDC)
 
         self.cmd_pwmfl_pub.publish(Float32(0))
         self.cmd_pwmfr_pub.publish(Float32(0))
@@ -176,10 +172,10 @@ class HardwareTester:
         if is_error == 1:
             error_msg = "ERROR WHEEL ENCODER "
             error_msg += str(is_error_tab)
-            print(self.FAIL + error_msg + self.ENDC)
+            print(CSIColor.FAIL + error_msg + CSIColor.ENDC)
             return
 
-        print(self.OKGREEN + "PASSED" + self.ENDC)
+        print(CSIColor.OKGREEN + "PASSED" + CSIColor.ENDC)
         return
 
     def check_torque(self):
@@ -215,10 +211,10 @@ class HardwareTester:
         if is_error == 1:
             error_msg = "ERROR WHEEL TORQUE "
             error_msg += str(is_error_tab)
-            print(self.FAIL + error_msg + self.ENDC)
+            print(CSIColor.FAIL + error_msg + CSIColor.ENDC)
             return
 
-        print(self.OKGREEN + "PASSED" + self.ENDC)
+        print(CSIColor.OKGREEN + "PASSED" + CSIColor.ENDC)
         return
 
     def check_imu(self):
@@ -238,7 +234,7 @@ class HardwareTester:
 
         while msg_cnt < 50:
             if time_now + imu_valid["imu"]["timeout"] < time.time():
-                print(self.WARNING + "TIMEOUT" + self.ENDC)
+                print(CSIColor.WARNING + "TIMEOUT" + CSIColor.ENDC)
                 return
 
             if self.is_new_imu_data == 1:
@@ -258,10 +254,10 @@ class HardwareTester:
                     and gyro_y - gyro_del < self.imu_data.gyro_y < gyro_y + gyro_del
                     and gyro_z - gyro_del < self.imu_data.gyro_z < gyro_z + gyro_del
                 ):
-                    print(self.FAIL + "INVALID DATA" + self.ENDC)
+                    print(CSIColor.FAIL + "INVALID DATA" + CSIColor.ENDC)
                     return
 
-        print(self.OKGREEN + "PASSED" + self.ENDC)
+        print(CSIColor.OKGREEN + "PASSED" + CSIColor.ENDC)
         return
 
     def check_battery(self):
@@ -271,7 +267,7 @@ class HardwareTester:
 
         while msg_cnt < 50:
             if time_now + batt_valid["battery"]["timeout"] < time.time():
-                print(self.WARNING + "TIMEOUT" + self.ENDC)
+                print(CSIColor.WARNING + "TIMEOUT" + CSIColor.ENDC)
                 return
 
             if self.is_new_battery_data == 1:
@@ -280,13 +276,13 @@ class HardwareTester:
                 msg_cnt += 1
 
                 if self.battery_data.data <= batt_valid["battery"]["voltage_min"]:
-                    print(self.FAIL + "LOW VOLTAGE" + self.ENDC)
+                    print(CSIColor.FAIL + "LOW VOLTAGE" + CSIColor.ENDC)
                     return
                 if self.battery_data.data >= batt_valid["battery"]["voltage_max"]:
-                    print(self.FAIL + "HIGH VOLTAGE" + self.ENDC)
+                    print(CSIColor.FAIL + "HIGH VOLTAGE" + CSIColor.ENDC)
                     return
 
-        print(self.OKGREEN + "PASSED" + self.ENDC)
+        print(CSIColor.OKGREEN + "PASSED" + CSIColor.ENDC)
         return
 
     # pylint: disable=too-many-branches,too-many-statements
