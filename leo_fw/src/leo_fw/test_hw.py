@@ -147,7 +147,6 @@ class HardwareTester:
             wheel_valid = parse_yaml(self.path + "encoder.yaml")
 
         for wheel_test in wheel_valid['tests']:
-            print(wheel_test)
 
             self.cmd_velfl_pub.publish(wheel_test["velocity"])
             self.cmd_velfr_pub.publish(wheel_test["velocity"])
