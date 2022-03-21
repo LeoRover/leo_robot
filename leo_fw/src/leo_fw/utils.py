@@ -1,4 +1,6 @@
 from __future__ import annotations
+from enum import Enum
+
 
 import sys
 from typing import Any
@@ -6,8 +8,8 @@ import yaml
 
 from whichcraft import which
 
-# pylint: disable=too-few-public-methods
-class CSIColor:
+
+class CSIColor(str, Enum):
     OKGREEN = "\033[92m"
     WARNING = "\033[93m"
     FAIL = "\033[91m"
