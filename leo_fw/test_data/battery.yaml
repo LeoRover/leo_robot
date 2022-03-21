@@ -1,4 +1,4 @@
 battery:
   timeout: 1
-  voltage_min: 11.0
+  voltage_min: 10.0
   voltage_max: 13.4
