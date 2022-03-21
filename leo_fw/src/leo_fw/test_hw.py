@@ -337,11 +337,7 @@ class HardwareTester:
             write_flush("--> Battery validation.. ")
             self.check_battery()
 
-        if (
-            hardware == TestMode.ALL
-            or hardware == TestMode.IMU
-            and board_type == BoardType.LEOCORE
-        ):
+        if hardware in (TestMode.ALL, TestMode.IMU) and board_type == BoardType.LEOCORE:
             write_flush("--> IMU validation.. ")
             self.check_imu()
 
@@ -354,8 +350,7 @@ class HardwareTester:
             self.check_encoder()
 
         if (
-            hardware == TestMode.ALL
-            or hardware == TestMode.TORQUE
+            hardware in (TestMode.ALL, TestMode.TORQUE)
             and board_type == BoardType.LEOCORE
         ):
             write_flush("--> Torque sensors validation.. ")
