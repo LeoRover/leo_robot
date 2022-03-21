@@ -2,8 +2,8 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.2.0 (2022-03-21)
+------------------
 * Add hardware tester script (`#7 <https://github.com/LeoRover/leo_robot/issues/7>`_)
 
 2.1.1 (2022-03-07)
