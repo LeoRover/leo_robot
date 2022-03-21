@@ -36,7 +36,7 @@ class HardwareTester:
     wheel_data = WheelStates()
     battery_data = Float32()
 
-    def __init__(self):
+    def __init__(self) -> None:
 
         self.rospack = rospkg.RosPack()
         self.path = self.rospack.get_path("leo_fw") + "/test_data/"
@@ -79,20 +79,19 @@ class HardwareTester:
         )
         self.imu_sub = rospy.Subscriber("firmware/imu", Imu, self.imu_callback)
 
-
-    def battery_callback(self, data):
+    def battery_callback(self, data: Float32) -> None:
         self.battery_data = data
         self.is_new_battery_data = 1
 
-    def imu_callback(self, data):
+    def imu_callback(self, data: Imu) -> None:
         self.imu_data = data
         self.is_new_imu_data = 1
 
-    def wheel_callback(self, data):
+    def wheel_callback(self, data: WheelStates) -> None:
         self.wheel_data = data
         self.is_new_wheel_data = 1
 
-    def check_motor_load(self):
+    def check_motor_load(self) -> None:
         speed_limit = 1
 
         for pwm in range(30):
@@ -123,7 +122,7 @@ class HardwareTester:
         self.cmd_pwmrl_pub.publish(Float32(0))
         self.cmd_pwmrr_pub.publish(Float32(0))
 
-    def check_encoder(self):
+    def check_encoder(self) -> None:
         is_error = 0
         is_error_tab = [0, 0, 0, 0]
 
@@ -163,7 +162,7 @@ class HardwareTester:
         print(CSIColor.OKGREEN + "PASSED" + CSIColor.ENDC)
         return
 
-    def check_torque(self):
+    def check_torque(self) -> None:
         is_error = 0
         is_error_tab = [0, 0, 0, 0]
 
@@ -202,7 +201,7 @@ class HardwareTester:
         print(CSIColor.OKGREEN + "PASSED" + CSIColor.ENDC)
         return
 
-    def check_imu(self):
+    def check_imu(self) -> None:
         msg_cnt = 0
         time_now = time.time()
         imu_valid = parse_yaml(self.path + "imu.yaml")
@@ -245,7 +244,7 @@ class HardwareTester:
         print(CSIColor.OKGREEN + "PASSED" + CSIColor.ENDC)
         return
 
-    def check_battery(self):
+    def check_battery(self) -> None:
         msg_cnt = 0
         time_now = time.time()
         batt_valid = parse_yaml(self.path + "battery.yaml")
@@ -273,8 +272,8 @@ class HardwareTester:
     # pylint: disable=too-many-branches,too-many-statements
     def test_hw(
         self,
-        hardware=TestMode.ALL,
-    ):
+        hardware: TestMode = TestMode.ALL,
+    ) -> None:
 
         write_flush("--> Checking if rosserial node is active.. ")
 
