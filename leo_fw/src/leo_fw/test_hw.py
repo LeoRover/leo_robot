@@ -13,17 +13,7 @@ from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
 from .utils import write_flush
 from .board import BoardType, determine_board, check_firmware_version
-from .utils import CSIColor
-
-
-def parse_yaml(file_path):
-    with open(file_path, "r") as stream:
-        try:
-            return yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-
-    return {}
+from .utils import CSIColor, parse_yaml
 
 
 class TestMode(Enum):
