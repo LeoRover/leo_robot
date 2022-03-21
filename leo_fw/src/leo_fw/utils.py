@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import sys
-import yaml
 from typing import Any
+import yaml
 
 from whichcraft import which
 
-
+# pylint: disable=too-few-public-methods
 class CSIColor:
     OKGREEN = "\033[92m"
     WARNING = "\033[93m"
