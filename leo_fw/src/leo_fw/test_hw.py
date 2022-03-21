@@ -81,8 +81,6 @@ class HardwareTester:
         )
         self.imu_sub = rospy.Subscriber("firmware/imu", Imu, self.imu_callback)
 
-    def __del__(self):
-        pass
 
     def battery_callback(self, data):
         self.battery_data = data
