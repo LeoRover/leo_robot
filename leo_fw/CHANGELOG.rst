@@ -2,6 +2,10 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add hardware tester script (`#7 <https://github.com/LeoRover/leo_robot/issues/7>`_)
+
 2.1.1 (2022-03-07)
 ------------------
 * Update leocore firmware to version 1.1.2
