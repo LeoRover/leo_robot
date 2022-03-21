@@ -6,5 +6,5 @@ imu:
   accel_x: 0
   accel_y: 0
   accel_z: 9.8
-  gyro_del: 0.2
-  accel_del: 0.4
+  gyro_del: 0.4
+  accel_del: 0.6
