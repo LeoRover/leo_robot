@@ -368,11 +368,7 @@ class HardwareTester:
             write_flush("--> IMU validation.. ")
             self.check_imu()
 
-        if (
-            hardware == TestMode.ALL
-            or hardware == TestMode.TORQUE
-            or hardware == TestMode.ENCODER
-        ):
+        if (hardware in (TestMode.All, TestMode.TORQUE, TestMode.ENCODER)):
             write_flush("--> Motors load test.. ")
             self.check_motor_load()
 
