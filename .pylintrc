@@ -6,5 +6,4 @@ disable=
     bad-continuation, # Doesn't like black formatter
     unsubscriptable-object, # Gives false positives for typing
     too-many-instance-attributes,
-    consider-using-in,
-    duplicate-code
+    duplicate-code # Common part of code in test_hw and flash
