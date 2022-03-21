@@ -348,7 +348,7 @@ class HardwareTester:
             print(f"Can not determine board version")
             return
 
-        if hardware == TestMode.ALL or hardware == TestMode.BATTERY:
+        if hardware in (TestMode.ALL, TestMode.BATTERY):
             write_flush("--> Battery validation.. ")
             self.check_battery()
 
@@ -360,11 +360,11 @@ class HardwareTester:
             write_flush("--> IMU validation.. ")
             self.check_imu()
 
-        if hardware in (TestMode.All, TestMode.TORQUE, TestMode.ENCODER):
+        if hardware in (TestMode.ALL, TestMode.TORQUE, TestMode.ENCODER):
             write_flush("--> Motors load test.. ")
             self.check_motor_load()
 
-        if hardware == TestMode.ALL or hardware == TestMode.ENCODER:
+        if hardware in (TestMode.ALL, TestMode.ENCODER):
             write_flush("--> Encoders validation.. ")
             self.check_encoder()
 
