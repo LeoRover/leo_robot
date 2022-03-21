@@ -6,8 +6,6 @@ import rospy
 import rosnode
 import rospkg
 
-import yaml
-
 from leo_msgs.msg import Imu, WheelStates
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
