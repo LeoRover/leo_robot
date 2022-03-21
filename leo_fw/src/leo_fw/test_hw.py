@@ -146,7 +146,7 @@ class HardwareTester:
         elif self.is_wheel_loaded == 0:
             wheel_valid = parse_yaml(self.path + "encoder.yaml")
 
-        for wheel_test in wheel_valid['tests']:
+        for wheel_test in wheel_valid["tests"]:
 
             self.cmd_velfl_pub.publish(wheel_test["velocity"])
             self.cmd_velfr_pub.publish(wheel_test["velocity"])
@@ -186,7 +186,7 @@ class HardwareTester:
         elif self.is_wheel_loaded == 0:
             torque_valid = parse_yaml(self.path + "torque.yaml")
 
-        for torque_test in torque_valid['tests']:
+        for torque_test in torque_valid["tests"]:
             self.cmd_pwmfl_pub.publish(torque_test["pwm"])
             self.cmd_pwmfr_pub.publish(torque_test["pwm"])
             self.cmd_pwmrl_pub.publish(-torque_test["pwm"])
@@ -305,8 +305,6 @@ class HardwareTester:
             )
             return
 
-        #####################################################
-
         if serial_node_active:
             write_flush("--> Trying to determine board type.. ")
 
@@ -316,8 +314,6 @@ class HardwareTester:
                 print("SUCCESS")
             else:
                 print("FAIL")
-
-        #####################################################
 
         current_firmware_version = "<unknown>"
 
@@ -331,8 +327,6 @@ class HardwareTester:
             else:
                 print("FAIL")
 
-        #####################################################
-
         if current_firmware_version == "<unknown>" or board_type is None:
             print(
                 "Can not determine firmware version or board type. "
@@ -340,14 +334,10 @@ class HardwareTester:
             )
             return
 
-        #####################################################
-
         if serial_node_active:
             write_flush("--> Initializing ROS node.. ")
             rospy.init_node("leo_core_validation", anonymous=True)
             print("OK")
-
-        #####################################################
 
         print(f"Firmware version: {current_firmware_version}")
         if board_type == BoardType.CORE2:
@@ -356,19 +346,21 @@ class HardwareTester:
             print(f"Board type: LeoCore")
         else:
             print(f"Can not determine board version")
-            return 
-
-        #####################################################
+            return
 
         if hardware == TestMode.ALL or hardware == TestMode.BATTERY:
             write_flush("--> Battery validation.. ")
             self.check_battery()
 
-        if hardware == TestMode.ALL or hardware == TestMode.IMU and board_type == BoardType.LEOCORE:
+        if (
+            hardware == TestMode.ALL
+            or hardware == TestMode.IMU
+            and board_type == BoardType.LEOCORE
+        ):
             write_flush("--> IMU validation.. ")
             self.check_imu()
 
-        if (hardware in (TestMode.All, TestMode.TORQUE, TestMode.ENCODER)):
+        if hardware in (TestMode.All, TestMode.TORQUE, TestMode.ENCODER):
             write_flush("--> Motors load test.. ")
             self.check_motor_load()
 
@@ -376,6 +368,10 @@ class HardwareTester:
             write_flush("--> Encoders validation.. ")
             self.check_encoder()
 
-        if hardware == TestMode.ALL or hardware == TestMode.TORQUE and board_type == BoardType.LEOCORE:
+        if (
+            hardware == TestMode.ALL
+            or hardware == TestMode.TORQUE
+            and board_type == BoardType.LEOCORE
+        ):
             write_flush("--> Torque sensors validation.. ")
             self.check_torque()
