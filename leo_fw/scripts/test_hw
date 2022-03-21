@@ -8,12 +8,12 @@ from leo_fw.test_hw import TestMode
 parser = argparse.ArgumentParser(description="Test controller controller")
 
 parser.add_argument(
-    "-hw",
+    "-m",
     dest="hardware",
     type=TestMode,
     choices=list(TestMode),
     default="all",
-    help="hardware to test",
+    help="select test mode",
 )
 
 args = parser.parse_args()
