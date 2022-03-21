@@ -1,9 +1,19 @@
 from __future__ import annotations
+from enum import Enum
+
 
 import sys
 from typing import Any
+import yaml
 
 from whichcraft import which
+
+
+class CSIColor(str, Enum):
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    FAIL = "\033[91m"
+    ENDC = "\033[0m"
 
 
 def is_tool(name: str) -> bool:
@@ -64,3 +74,13 @@ def prompt_options(options: list[tuple[str, Any]], default: int = 1) -> str:
             _, selected = options[selected_nr]
             return selected
         print(f"Please select a valid option")
+
+
+def parse_yaml(file_path: str):
+    with open(file_path, "r") as stream:
+        try:
+            return yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+
+    return {}
