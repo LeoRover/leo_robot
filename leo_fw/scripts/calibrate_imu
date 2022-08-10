@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+
+import argparse
+import sys
+
+import numpy as np
+
+import rospy
+from leo_msgs import Imu
+from geometry_msgs import Vector3
+
+
+class Calibrator:
+    def __init__(self, time=2.0):
+        self.data = []
+        self.end_time = rospy.Time.now() + time
+
+        self.calib_pub = rospy.Publisher("set_imu_calibration", Vector3, queue_size=1)
+        self.imu_sub = rospy.Subscriber(
+            "firmware/imu", Imu, self.imu_sub_callback, queue_size=1
+        )
+
+    def imu_sub_callback(self, data: Imu):
+        if rospy.Time.now() >= self.end_time:
+            self.send_offset()
+            return
+
+        self.data.append([data.gyro_x, data.gyro_y, data.gyro_z])
+
+    def send_offset(self):
+        matrix = np.matrix(self.data)
+        offset = matrix.mean(0).tolist()[0]
+
+        msg = Vector3(offset)
+        self.calib_pub.publish(msg)
+
+
+def add_arguments(parser: argparse.ArgumentParser):
+    parser.add_argument(
+        "duration",
+        default=10.0,
+        type=float,
+        nargs="?",
+        metavar="N",
+        help="Time from which the callibration will be calculated",
+    )
+
+
+if __name__ == "__main__":
+    rospy.init_node("imu_calibration")
+
+    parser = argparse.ArgumentParser(description="Record camera image from drone.")
+    add_arguments(parser)
+    args = parser.parse_args()
+
+    calib = Calibrator(args.duration)
+    rospy.spin()
