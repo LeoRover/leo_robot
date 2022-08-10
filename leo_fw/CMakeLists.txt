@@ -8,6 +8,8 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
 )
 
+find_package(yaml-cpp REQUIRED)
+
 catkin_python_setup()
 
 catkin_package(
@@ -20,6 +22,7 @@ catkin_package(
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${YAML_CPP_INCLUDE_DIRS}
 )
 
 
@@ -29,6 +32,7 @@ add_executable(firmware_message_converter
 
 target_link_libraries(firmware_message_converter
   ${catkin_LIBRARIES}
+  ${YAML_CPP_LIBRARIES}
 )
 
 install(
