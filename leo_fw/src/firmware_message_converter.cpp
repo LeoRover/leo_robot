@@ -1,14 +1,14 @@
 #include <cmath>
-#include <fstream>
 #include <cstdlib>
+#include <fstream>
 
 #include "ros/ros.h"
 #include "yaml-cpp/yaml.h"
 
+#include "geometry_msgs/Vector3.h"
 #include "nav_msgs/Odometry.h"
 #include "sensor_msgs/Imu.h"
 #include "sensor_msgs/JointState.h"
-#include "geometry_msgs/Vector3.h"
 
 #include "leo_msgs/Imu.h"
 #include "leo_msgs/WheelOdom.h"
@@ -115,7 +115,7 @@ void imu_callback(const leo_msgs::ImuPtr &msg) {
   imu_pub.publish(imu);
 }
 
-void imu_calibration_callback(const geometry_msgs::Vector3 &msg){
+void imu_calibration_callback(const geometry_msgs::Vector3 &msg) {
   imu_calibration_bias[0] = msg.x;
   imu_calibration_bias[1] = msg.y;
   imu_calibration_bias[2] = msg.z;
@@ -130,23 +130,23 @@ void imu_calibration_callback(const geometry_msgs::Vector3 &msg){
 
 void load_yaml_bias() {
   YAML::Node node = YAML::LoadFile(calib_file_path);
-  
-  if(node["gyro_bias_x"])
+
+  if (node["gyro_bias_x"])
     imu_calibration_bias[0] = node["gyro_bias_x"].as<float>();
-  
-  if(node["gyro_bias_y"])
+
+  if (node["gyro_bias_y"])
     imu_calibration_bias[1] = node["gyro_bias_y"].as<float>();
 
-  if(node["gyro_bias_z"])
+  if (node["gyro_bias_z"])
     imu_calibration_bias[2] = node["gyro_bias_z"].as<float>();
 }
 
-std::string get_calib_path(){
+std::string get_calib_path() {
   std::string ros_home;
   char *ros_home_env;
-  if(ros_home_env = std::getenv("ROS_HOME")) {
+  if (ros_home_env = std::getenv("ROS_HOME")) {
     ros_home = ros_home_env;
-  } else if(ros_home_env = std::getenv("HOME")) {
+  } else if (ros_home_env = std::getenv("HOME")) {
     ros_home = ros_home_env;
     ros_home += "/.ros";
   }
@@ -173,7 +173,8 @@ int main(int argc, char **argv) {
       ros::names::resolve("firmware/wheel_odom");
   const std::string imu_topic = ros::names::resolve("firmware/imu");
 
-  imu_calib_sub = pnh.subscribe("set_imu_calibration", 3, imu_calibration_callback);
+  imu_calib_sub =
+      pnh.subscribe("set_imu_calibration", 3, imu_calibration_callback);
 
   ros::Rate rate(2);
   while (ros::ok()) {
