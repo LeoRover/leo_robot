@@ -47,6 +47,7 @@ catkin_install_python(
     scripts/update
     scripts/flash
     scripts/test_hw
+    scripts/calibrate_imu
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
