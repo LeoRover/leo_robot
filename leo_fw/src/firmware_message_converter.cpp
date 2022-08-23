@@ -129,7 +129,20 @@ void imu_calibration_callback(const geometry_msgs::Vector3 &msg) {
 }
 
 void load_yaml_bias() {
-  YAML::Node node = YAML::LoadFile(calib_file_path);
+  YAML::Node node;
+  try{
+    node = YAML::LoadFile(calib_file_path);
+  } catch(YAML::BadFile &e) {
+    std::cerr << "Calibration file doesn't exist.\n";
+    std::cerr << "Creating calibration file with default gyrometer bias.\n";
+
+    node["gyro_bias_x"] = imu_calibration_bias[0];
+    node["gyro_bias_y"] = imu_calibration_bias[1];
+    node["gyro_bias_z"] = imu_calibration_bias[2];
+
+    std::ofstream fout(calib_file_path);
+    fout << node;
+  }
 
   if (node["gyro_bias_x"])
     imu_calibration_bias[0] = node["gyro_bias_x"].as<float>();
@@ -141,6 +154,7 @@ void load_yaml_bias() {
     imu_calibration_bias[2] = node["gyro_bias_z"].as<float>();
 }
 
+
 std::string get_calib_path() {
   std::string ros_home;
   char *ros_home_env;
@@ -150,7 +164,7 @@ std::string get_calib_path() {
     ros_home = ros_home_env;
     ros_home += "/.ros";
   }
-  std::cout << ros_home + "/imu_calibration.yaml";
+
   return ros_home + "/imu_calibration.yaml";
 }
 
