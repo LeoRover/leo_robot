@@ -25,7 +25,6 @@ class Calibrator:
             self.send_bias()
             self.imu_sub.unregister()
             rospy.signal_shutdown("Calculation completed. Bias sent.")
-            
 
         self.data.append([data.gyro_x, data.gyro_y, data.gyro_z])
 

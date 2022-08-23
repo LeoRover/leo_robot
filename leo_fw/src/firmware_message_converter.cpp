@@ -130,9 +130,9 @@ void imu_calibration_callback(const geometry_msgs::Vector3 &msg) {
 
 void load_yaml_bias() {
   YAML::Node node;
-  try{
+  try {
     node = YAML::LoadFile(calib_file_path);
-  } catch(YAML::BadFile &e) {
+  } catch (YAML::BadFile &e) {
     std::cerr << "Calibration file doesn't exist.\n";
     std::cerr << "Creating calibration file with default gyrometer bias.\n";
 
@@ -153,7 +153,6 @@ void load_yaml_bias() {
   if (node["gyro_bias_z"])
     imu_calibration_bias[2] = node["gyro_bias_z"].as<float>();
 }
-
 
 std::string get_calib_path() {
   std::string ros_home;
@@ -187,7 +186,8 @@ int main(int argc, char **argv) {
       ros::names::resolve("firmware/wheel_odom");
   const std::string imu_topic = ros::names::resolve("firmware/imu");
 
-  imu_calib_sub = nh.subscribe("set_imu_calibration", 3, imu_calibration_callback);
+  imu_calib_sub =
+      nh.subscribe("set_imu_calibration", 3, imu_calibration_callback);
 
   ros::Rate rate(2);
   while (ros::ok()) {
