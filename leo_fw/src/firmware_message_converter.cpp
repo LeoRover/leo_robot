@@ -187,8 +187,7 @@ int main(int argc, char **argv) {
       ros::names::resolve("firmware/wheel_odom");
   const std::string imu_topic = ros::names::resolve("firmware/imu");
 
-  imu_calib_sub =
-      pnh.subscribe("set_imu_calibration", 3, imu_calibration_callback);
+  imu_calib_sub = nh.subscribe("set_imu_calibration", 3, imu_calibration_callback);
 
   ros::Rate rate(2);
   while (ros::ok()) {
