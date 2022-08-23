@@ -23,7 +23,9 @@ class Calibrator:
     def imu_sub_callback(self, data: Imu):
         if rospy.Time.now() >= self.end_time:
             self.send_bias()
-            return
+            self.imu_sub.unregister()
+            rospy.signal_shutdown()
+            
 
         self.data.append([data.gyro_x, data.gyro_y, data.gyro_z])
 
@@ -34,7 +36,8 @@ class Calibrator:
         bias = matrix.mean(0) * -1.0
         bias = bias.tolist()[0]
 
-        msg = Vector3(bias)
+        msg = Vector3()
+        msg.x, msg.y, msg.z = bias
         self.calib_pub.publish(msg)
 
 
