@@ -6,14 +6,14 @@ import sys
 import numpy as np
 
 import rospy
-from leo_msgs import Imu
-from geometry_msgs import Vector3
+from leo_msgs.msg import Imu
+from geometry_msgs.msg import Vector3
 
 
 class Calibrator:
     def __init__(self, time=2.0):
         self.data = []
-        self.end_time = rospy.Time.now() + time
+        self.end_time = rospy.Time.now() + rospy.Duration(time)
 
         self.calib_pub = rospy.Publisher("set_imu_calibration", Vector3, queue_size=1)
         self.imu_sub = rospy.Subscriber(
