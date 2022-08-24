@@ -2,6 +2,11 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add IMU gyro calibration (`#9 <https://github.com/LeoRover/leo_robot/issues/9>`_)
+* Contributors: Aleksander Szymański
+
 2.2.0 (2022-03-21)
 ------------------
 * Add hardware tester script (`#7 <https://github.com/LeoRover/leo_robot/issues/7>`_)
