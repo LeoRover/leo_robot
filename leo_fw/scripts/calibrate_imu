@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+
+import argparse
+
+import numpy as np
+
+import rospy
+from leo_msgs.msg import Imu
+from leo_msgs.srv import SetImuCalibration
+
+
+class Calibrator:
+    def __init__(self, time=2.0):
+        self.data = []
+        self.end_time = rospy.Time.now() + rospy.Duration(time)
+
+        rospy.wait_for_service("set_imu_calibration")
+        self.service_proxy = rospy.ServiceProxy(
+            "set_imu_calibration", SetImuCalibration
+        )
+        self.imu_sub = rospy.Subscriber(
+            "firmware/imu", Imu, self.imu_sub_callback, queue_size=1
+        )
+
+    def imu_sub_callback(self, data: Imu):
+        if rospy.Time.now() >= self.end_time:
+            self.send_bias()
+            self.imu_sub.unregister()
+            rospy.signal_shutdown("Calculation completed. Bias sent.")
+
+        self.data.append([data.gyro_x, data.gyro_y, data.gyro_z])
+
+    def send_bias(self):
+        rospy.loginfo(f"Calculating bias from {len(self.data)} samples.")
+
+        matrix = np.matrix(self.data)
+        bias = matrix.mean(0) * -1.0
+        bias = bias.tolist()[0]
+
+        rospy.loginfo(f"Calculated bias: {bias}")
+
+        response = self.service_proxy(*bias)
+        if not response.success:
+            rospy.logerr(f"Failed to set new imu calibration.")
+
+
+def add_arguments(parser: argparse.ArgumentParser):
+    parser.add_argument(
+        "duration",
+        default=10.0,
+        type=float,
+        nargs="?",
+        help="The duration for which the IMU data is collected.",
+    )
+
+
+if __name__ == "__main__":
+    rospy.init_node("imu_calibration")
+
+    parser = argparse.ArgumentParser(
+        description="Calculate imu bias and send it to firmware_message_converter."
+    )
+    add_arguments(parser)
+    args = parser.parse_args()
+
+    calib = Calibrator(args.duration)
+    rospy.spin()

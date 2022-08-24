@@ -28,10 +28,13 @@
 
   <exec_depend>std_srvs</exec_depend>
   <exec_depend>rosmon_msgs</exec_depend>
+  
+  <exec_depend>python3-numpy</exec_depend>
 
   <depend>roscpp</depend>
   <depend>sensor_msgs</depend>
   <depend>nav_msgs</depend>
+  <depend>yaml-cpp</depend>
 
   <depend>leo_msgs</depend>
 
