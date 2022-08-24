@@ -14,6 +14,8 @@
 #include "leo_msgs/WheelOdom.h"
 #include "leo_msgs/WheelStates.h"
 
+#include "leo_msgs/SetImuCalibration.h"
+
 static ros::Subscriber wheel_states_sub;
 static ros::Publisher joint_states_pub;
 static bool joint_states_advertised = false;
@@ -26,7 +28,7 @@ static ros::Subscriber imu_sub;
 static ros::Publisher imu_pub;
 static bool imu_advertised = false;
 
-static ros::Subscriber imu_calib_sub;
+ros::ServiceServer set_imu_calibration_service;
 
 std::string robot_frame_id = "base_link";
 std::string odom_frame_id = "odom";
@@ -44,7 +46,7 @@ std::string tf_frame_prefix = "";
 std::vector<float> imu_calibration_bias = {0.0, 0.0, 0.0};
 std::string calib_file_path = "";
 
-void load_parameters(ros::NodeHandle &pnh) {
+void load_parameters(ros::NodeHandle& pnh) {
   pnh.getParam("robot_frame_id", robot_frame_id);
   pnh.getParam("odom_frame_id", odom_frame_id);
   pnh.getParam("imu_frame_id", imu_frame_id);
@@ -62,7 +64,7 @@ void load_parameters(ros::NodeHandle &pnh) {
   imu_frame_id = tf_frame_prefix + imu_frame_id;
 }
 
-void wheel_states_callback(const leo_msgs::WheelStatesPtr &msg) {
+void wheel_states_callback(const leo_msgs::WheelStatesPtr& msg) {
   sensor_msgs::JointState joint_states;
   joint_states.header.stamp = msg->stamp;
   joint_states.name = wheel_joint_names;
@@ -76,7 +78,7 @@ void wheel_states_callback(const leo_msgs::WheelStatesPtr &msg) {
   joint_states_pub.publish(joint_states);
 }
 
-void wheel_odom_callback(const leo_msgs::WheelOdomPtr &msg) {
+void wheel_odom_callback(const leo_msgs::WheelOdomPtr& msg) {
   nav_msgs::Odometry wheel_odom;
   wheel_odom.header.frame_id = odom_frame_id;
   wheel_odom.child_frame_id = robot_frame_id;
@@ -94,7 +96,7 @@ void wheel_odom_callback(const leo_msgs::WheelOdomPtr &msg) {
 
   wheel_odom_pub.publish(wheel_odom);
 }
-void imu_callback(const leo_msgs::ImuPtr &msg) {
+void imu_callback(const leo_msgs::ImuPtr& msg) {
   sensor_msgs::Imu imu;
   imu.header.frame_id = imu_frame_id;
   imu.header.stamp = msg->stamp;
@@ -115,24 +117,21 @@ void imu_callback(const leo_msgs::ImuPtr &msg) {
   imu_pub.publish(imu);
 }
 
-void imu_calibration_callback(const geometry_msgs::Vector3 &msg) {
-  imu_calibration_bias[0] = msg.x;
-  imu_calibration_bias[1] = msg.y;
-  imu_calibration_bias[2] = msg.z;
-
-  YAML::Node node = YAML::LoadFile(calib_file_path);
-  node["gyro_bias_x"] = imu_calibration_bias[0];
-  node["gyro_bias_y"] = imu_calibration_bias[1];
-  node["gyro_bias_z"] = imu_calibration_bias[2];
-  std::ofstream fout(calib_file_path);
-  fout << node;
-}
-
 void load_yaml_bias() {
   YAML::Node node;
   try {
     node = YAML::LoadFile(calib_file_path);
-  } catch (YAML::BadFile &e) {
+
+    if (node["gyro_bias_x"])
+      imu_calibration_bias[0] = node["gyro_bias_x"].as<float>();
+
+    if (node["gyro_bias_y"])
+      imu_calibration_bias[1] = node["gyro_bias_y"].as<float>();
+
+    if (node["gyro_bias_z"])
+      imu_calibration_bias[2] = node["gyro_bias_z"].as<float>();
+
+  } catch (YAML::BadFile& e) {
     std::cerr << "Calibration file doesn't exist.\n";
     std::cerr << "Creating calibration file with default gyrometer bias.\n";
 
@@ -143,20 +142,11 @@ void load_yaml_bias() {
     std::ofstream fout(calib_file_path);
     fout << node;
   }
-
-  if (node["gyro_bias_x"])
-    imu_calibration_bias[0] = node["gyro_bias_x"].as<float>();
-
-  if (node["gyro_bias_y"])
-    imu_calibration_bias[1] = node["gyro_bias_y"].as<float>();
-
-  if (node["gyro_bias_z"])
-    imu_calibration_bias[2] = node["gyro_bias_z"].as<float>();
 }
 
 std::string get_calib_path() {
   std::string ros_home;
-  char *ros_home_env;
+  char* ros_home_env;
   if (ros_home_env = std::getenv("ROS_HOME")) {
     ros_home = ros_home_env;
   } else if (ros_home_env = std::getenv("HOME")) {
@@ -167,7 +157,23 @@ std::string get_calib_path() {
   return ros_home + "/imu_calibration.yaml";
 }
 
-int main(int argc, char **argv) {
+bool set_imu_calibration_callback(leo_msgs::SetImuCalibrationRequest& req,
+                                  leo_msgs::SetImuCalibrationResponse& res) {
+  ROS_INFO("SetImuCalibration request for: [ %f, %f, %f]", req.gyro_bias_x,
+           req.gyro_bias_y, req.gyro_bias_z);
+
+  YAML::Node node = YAML::LoadFile(calib_file_path);
+  node["gyro_bias_x"] = imu_calibration_bias[0] = req.gyro_bias_x;
+  node["gyro_bias_y"] = imu_calibration_bias[1] = req.gyro_bias_y;
+  node["gyro_bias_z"] = imu_calibration_bias[2] = req.gyro_bias_z;
+  std::ofstream fout(calib_file_path);
+  fout << node;
+
+  res.success = true;
+  return true;
+}
+
+int main(int argc, char** argv) {
   ros::init(argc, argv, "firmware_message_converter");
 
   ros::NodeHandle nh;
@@ -186,8 +192,8 @@ int main(int argc, char **argv) {
       ros::names::resolve("firmware/wheel_odom");
   const std::string imu_topic = ros::names::resolve("firmware/imu");
 
-  imu_calib_sub =
-      nh.subscribe("set_imu_calibration", 3, imu_calibration_callback);
+  set_imu_calibration_service =
+      nh.advertiseService("set_imu_calibration", set_imu_calibration_callback);
 
   ros::Rate rate(2);
   while (ros::ok()) {
@@ -223,7 +229,7 @@ int main(int argc, char **argv) {
     ros::master::V_TopicInfo topics;
     ros::master::getTopics(topics);
 
-    for (auto &topic : topics) {
+    for (auto& topic : topics) {
       if (!joint_states_advertised && topic.name == wheel_states_topic) {
         ROS_INFO(
             "Detected firmware/wheel_states topic advertised. "

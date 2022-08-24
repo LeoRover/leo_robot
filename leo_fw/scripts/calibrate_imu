@@ -6,7 +6,7 @@ import numpy as np
 
 import rospy
 from leo_msgs.msg import Imu
-from geometry_msgs.msg import Vector3
+from leo_msgs.srv import SetImuCalibration
 
 
 class Calibrator:
@@ -14,7 +14,10 @@ class Calibrator:
         self.data = []
         self.end_time = rospy.Time.now() + rospy.Duration(time)
 
-        self.calib_pub = rospy.Publisher("set_imu_calibration", Vector3, queue_size=1)
+        rospy.wait_for_service("set_imu_calibration")
+        self.service_proxy = rospy.ServiceProxy(
+            "set_imu_calibration", SetImuCalibration
+        )
         self.imu_sub = rospy.Subscriber(
             "firmware/imu", Imu, self.imu_sub_callback, queue_size=1
         )
@@ -36,9 +39,9 @@ class Calibrator:
 
         rospy.loginfo(f"Calculated bias: {bias}")
 
-        msg = Vector3()
-        msg.x, msg.y, msg.z = bias
-        self.calib_pub.publish(msg)
+        response = self.service_proxy(*bias)
+        if not response.success:
+            rospy.logerr(f"Failed to set new imu calibration.")
 
 
 def add_arguments(parser: argparse.ArgumentParser):
