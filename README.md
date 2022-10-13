@@ -2,7 +2,7 @@
 
 | ROS Distribution: | Melodic | Noetic |
 |:---|:---:|:--:|
-| **Released version:** | [1.2.1] | [2.1.0] |
+| **Released version:** | [1.2.1] | [2.3.0] |
 | **Development branch:** | [melodic] | [master] |
 | **Build status:** | [![Build Status](http://build.ros.org/job/Mdev__leo_robot__ubuntu_bionic_amd64/badge/icon)](http://build.ros.org/job/Mdev__leo_robot__ubuntu_bionic_amd64/) | [![Build Status](https://build.ros.org/job/Ndev__leo_robot__ubuntu_focal_amd64/badge/icon)](https://build.ros.org/job/Ndev__leo_robot__ubuntu_focal_amd64/) <br> [![Build Status](http://build.ros.org/job/Ndev_db__leo_robot__debian_buster_amd64/badge/icon)](http://build.ros.org/job/Ndev_db__leo_robot__debian_buster_amd64/)|
 
@@ -22,4 +22,4 @@ For more information about the robot, visit [Robots/Leo Rover].
 [melodic]: https://github.com/LeoRover/leo_robot/tree/melodic
 [master]: https://github.com/LeoRover/leo_robot/tree/master
 [1.2.1]: https://github.com/LeoRover/leo_robot/tree/1.2.1
-[2.1.0]: https://github.com/LeoRover/leo_robot/tree/2.1.0
+[2.3.0]: https://github.com/LeoRover/leo_robot/tree/2.3.0
