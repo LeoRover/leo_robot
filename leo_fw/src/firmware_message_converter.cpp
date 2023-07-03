@@ -135,7 +135,9 @@ void imu_callback(const leo_msgs::ImuPtr& msg) {
 
 void merge_odometry_callback(const ros::TimerEvent& events){
   nav_msgs::Odometry merged_odom;
-  
+  merged_odom.header.frame_id = odom_frame_id;
+  merged_odom.child_frame_id = robot_frame_id;
+  merged_odom.header.stamp = ros::Time::now();
   merged_odom.twist.twist.linear.x = velocity_linear_x;
   merged_odom.twist.twist.linear.y = velocity_linear_y;
   merged_odom.twist.twist.angular.z = velocity_angular_z;

@@ -10,8 +10,11 @@ firmware:
   diff_drive:
     wheel_radius: 0.0625
     wheel_separation: 0.33
+    wheel_base: 0.3052
     angular_velocity_multiplier: 1.91
     input_timeout: 500
+  
+  mecanum_wheels: true
 
   battery_min_voltage: 10.0
 
