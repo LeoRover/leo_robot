@@ -28,6 +28,16 @@ static ros::Subscriber imu_sub;
 static ros::Publisher imu_pub;
 static bool imu_advertised = false;
 
+static ros::Publisher odom_merged_pub;
+static ros::Timer odom_merged_timer;
+static geometry_msgs::Point odom_merged_position;
+static float odom_merged_yaw;
+static bool odom_merged_advertised = false;
+static float velocity_linear_x = 0;
+static float velocity_linear_y = 0;
+static float velocity_angular_z = 0;
+static constexpr float PI = 3.141592653F;
+
 ros::ServiceServer set_imu_calibration_service;
 
 std::string robot_frame_id = "base_link";
@@ -83,12 +93,16 @@ void wheel_odom_callback(const leo_msgs::WheelOdomPtr& msg) {
   wheel_odom.header.frame_id = odom_frame_id;
   wheel_odom.child_frame_id = robot_frame_id;
   wheel_odom.header.stamp = msg->stamp;
-  wheel_odom.twist.twist.linear.x = msg->velocity_lin;
+  wheel_odom.twist.twist.linear.x = msg->velocity_lin_x;
+  wheel_odom.twist.twist.linear.y = msg->velocity_lin_y;
   wheel_odom.twist.twist.angular.z = msg->velocity_ang;
   wheel_odom.pose.pose.position.x = msg->pose_x;
   wheel_odom.pose.pose.position.y = msg->pose_y;
   wheel_odom.pose.pose.orientation.z = std::sin(msg->pose_yaw * 0.5F);
   wheel_odom.pose.pose.orientation.w = std::cos(msg->pose_yaw * 0.5F);
+
+  velocity_linear_x = msg->velocity_lin_x;
+  velocity_linear_y = msg->velocity_lin_y;
 
   for (int i = 0; i < 6; i++)
     wheel_odom.twist.covariance[i * 7] =
@@ -107,6 +121,8 @@ void imu_callback(const leo_msgs::ImuPtr& msg) {
   imu.linear_acceleration.y = msg->accel_y;
   imu.linear_acceleration.z = msg->accel_z;
 
+  velocity_angular_z = imu.angular_velocity.z;
+
   for (int i = 0; i < 3; i++) {
     imu.angular_velocity_covariance[i * 4] =
         imu_angular_velocity_covariance_diagonal[i];
@@ -115,6 +131,34 @@ void imu_callback(const leo_msgs::ImuPtr& msg) {
   }
 
   imu_pub.publish(imu);
+}
+
+void merge_odometry_callback(const ros::TimerEvent& events){
+  nav_msgs::Odometry merged_odom;
+  
+  merged_odom.twist.twist.linear.x = velocity_linear_x;
+  merged_odom.twist.twist.linear.y = velocity_linear_y;
+  merged_odom.twist.twist.angular.z = velocity_angular_z;
+
+  const float move_x = velocity_linear_x * std::cos(odom_merged_yaw) - velocity_linear_y * std::sin(odom_merged_yaw);
+  const float move_y = velocity_linear_x * std::sin(odom_merged_yaw) + velocity_linear_y * std::cos(odom_merged_yaw);
+
+  odom_merged_position.x += move_x * 0.01;
+  odom_merged_position.y += move_y * 0.01;
+
+  odom_merged_yaw += velocity_angular_z * 0.01;
+
+  if (odom_merged_yaw > 2.0F * PI)
+    odom_merged_yaw -= 2.0F * PI;
+  else if(odom_merged_yaw < 0.0F)
+    odom_merged_yaw += 2.0F * PI;
+
+  merged_odom.pose.pose.position.x = odom_merged_position.x;
+  merged_odom.pose.pose.position.y = odom_merged_position.y;
+  merged_odom.pose.pose.orientation.z = std::sin(odom_merged_yaw * 0.5F);
+  merged_odom.pose.pose.orientation.w = std::cos(odom_merged_yaw * 0.5F);
+  
+  odom_merged_pub.publish(merged_odom);
 }
 
 void load_yaml_bias() {
@@ -209,18 +253,24 @@ int main(int argc, char** argv) {
     if (wheel_odom_advertised && wheel_odom_sub.getNumPublishers() == 0) {
       ROS_INFO(
           "firmware/wheel_odom topic no longer has any publishers. "
-          "Shutting down wheel_odom_with_covariance publisher.");
+          "Shutting down wheel_odom_with_covariance and odometry_merged publishers.");
       wheel_odom_sub.shutdown();
       wheel_odom_pub.shutdown();
+      odom_merged_pub.shutdown();
+      odom_merged_timer.stop();
       wheel_odom_advertised = false;
+      odom_merged_advertised = false;
     }
     if (imu_advertised && imu_sub.getNumPublishers() == 0) {
       ROS_INFO(
           "firmware/imu topic no longer has any publishers. "
-          "Shutting down imu/data_raw publisher.");
+          "Shutting down imu/data_raw and odometry_merged publishers.");
       imu_sub.shutdown();
       imu_pub.shutdown();
+      odom_merged_pub.shutdown();
+      odom_merged_timer.stop();
       imu_advertised = false;
+      odom_merged_advertised = false;
     }
 
     rate.sleep();
@@ -257,6 +307,15 @@ int main(int argc, char** argv) {
         imu_pub = nh.advertise<sensor_msgs::Imu>("imu/data_raw", 10);
         imu_sub = nh.subscribe("firmware/imu", 5, imu_callback);
         imu_advertised = true;
+      }
+
+      if(!odom_merged_advertised && imu_advertised && wheel_odom_advertised) {
+        ROS_INFO(
+            "Both firmware/imu and firmware/wheel_odom topics are advertised. "
+            "Advertising odometry_merged topic.");
+        odom_merged_pub = nh.advertise<nav_msgs::Odometry>("odometry_merged", 10);
+        odom_merged_timer = nh.createTimer(ros::Duration(0.01), merge_odometry_callback);
+        odom_merged_advertised = true;
       }
     }
 
