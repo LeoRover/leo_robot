@@ -9,6 +9,7 @@
 #include "nav_msgs/Odometry.h"
 #include "sensor_msgs/Imu.h"
 #include "sensor_msgs/JointState.h"
+#include "std_srvs/Trigger.h"
 
 #include "leo_msgs/Imu.h"
 #include "leo_msgs/WheelOdom.h"
@@ -36,6 +37,8 @@ static bool odom_merged_advertised = false;
 static float velocity_linear_x = 0;
 static float velocity_linear_y = 0;
 static float velocity_angular_z = 0;
+ros::ServiceClient odom_reset_client;
+ros::ServiceServer reset_odometry_service;
 static constexpr float PI = 3.141592653F;
 
 ros::ServiceServer set_imu_calibration_service;
@@ -219,6 +222,20 @@ bool set_imu_calibration_callback(leo_msgs::SetImuCalibrationRequest& req,
   return true;
 }
 
+bool reset_odometry_callback(std_srvs::TriggerRequest &req,
+                           std_srvs::TriggerResponse &res) {
+  odom_merged_position.x = 0.0F;
+  odom_merged_position.y = 0.0F;
+  odom_merged_yaw = 0.0F;
+  if(odom_reset_client.call(req, res)) {
+    res.success = true;
+    return true;
+  } else {
+    res.success = false;
+    return false;
+  }
+}
+
 int main(int argc, char** argv) {
   ros::init(argc, argv, "firmware_message_converter");
 
@@ -240,6 +257,8 @@ int main(int argc, char** argv) {
 
   set_imu_calibration_service =
       nh.advertiseService("set_imu_calibration", set_imu_calibration_callback);
+  odom_reset_client = nh.serviceClient<std_srvs::Trigger>("firmware/reset_odometry");
+  reset_odometry_service = nh.advertiseService("reset_odometry", &reset_odometry_callback);
 
   ros::Rate rate(2);
   while (ros::ok()) {
