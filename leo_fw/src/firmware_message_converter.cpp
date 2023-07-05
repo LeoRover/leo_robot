@@ -96,8 +96,7 @@ void wheel_odom_callback(const leo_msgs::WheelOdomPtr& msg) {
   wheel_odom.header.frame_id = odom_frame_id;
   wheel_odom.child_frame_id = robot_frame_id;
   wheel_odom.header.stamp = msg->stamp;
-  wheel_odom.twist.twist.linear.x = msg->velocity_lin_x;
-  wheel_odom.twist.twist.linear.y = msg->velocity_lin_y;
+  wheel_odom.twist.twist.linear.x = msg->velocity_lin;
   wheel_odom.twist.twist.angular.z = msg->velocity_ang;
   wheel_odom.pose.pose.position.x = msg->pose_x;
   wheel_odom.pose.pose.position.y = msg->pose_y;
