@@ -135,7 +135,7 @@ void imu_callback(const leo_msgs::ImuPtr& msg) {
   imu_pub.publish(imu);
 }
 
-void merge_odometry_callback(const ros::TimerEvent& events){
+void merge_odometry_callback(const ros::TimerEvent& events) {
   nav_msgs::Odometry merged_odom;
   merged_odom.header.frame_id = odom_frame_id;
   merged_odom.child_frame_id = robot_frame_id;
@@ -153,14 +153,14 @@ void merge_odometry_callback(const ros::TimerEvent& events){
 
   if (odom_merged_yaw > 2.0F * PI)
     odom_merged_yaw -= 2.0F * PI;
-  else if(odom_merged_yaw < 0.0F)
+  else if (odom_merged_yaw < 0.0F)
     odom_merged_yaw += 2.0F * PI;
 
   merged_odom.pose.pose.position.x = odom_merged_position.x;
   merged_odom.pose.pose.position.y = odom_merged_position.y;
   merged_odom.pose.pose.orientation.z = std::sin(odom_merged_yaw * 0.5F);
   merged_odom.pose.pose.orientation.w = std::cos(odom_merged_yaw * 0.5F);
-  
+
   odom_merged_pub.publish(merged_odom);
 }
 
@@ -220,12 +220,12 @@ bool set_imu_calibration_callback(leo_msgs::SetImuCalibrationRequest& req,
   return true;
 }
 
-bool reset_odometry_callback(std_srvs::TriggerRequest &req,
-                           std_srvs::TriggerResponse &res) {
+bool reset_odometry_callback(std_srvs::TriggerRequest& req,
+                             std_srvs::TriggerResponse& res) {
   odom_merged_position.x = 0.0F;
   odom_merged_position.y = 0.0F;
   odom_merged_yaw = 0.0F;
-  if(odom_reset_client.call(req, res)) {
+  if (odom_reset_client.call(req, res)) {
     res.success = true;
     return true;
   } else {
@@ -257,8 +257,10 @@ int main(int argc, char** argv) {
 
   set_imu_calibration_service =
       nh.advertiseService("set_imu_calibration", set_imu_calibration_callback);
-  odom_reset_client = nh.serviceClient<std_srvs::Trigger>("firmware/reset_odometry");
-  reset_odometry_service = nh.advertiseService("reset_odometry", &reset_odometry_callback);
+  odom_reset_client =
+      nh.serviceClient<std_srvs::Trigger>("firmware/reset_odometry");
+  reset_odometry_service =
+      nh.advertiseService("reset_odometry", &reset_odometry_callback);
 
   ros::Rate rate(2);
   while (ros::ok()) {
@@ -274,7 +276,8 @@ int main(int argc, char** argv) {
     if (wheel_odom_advertised && wheel_odom_sub.getNumPublishers() == 0) {
       ROS_INFO(
           "firmware/wheel_odom topic no longer has any publishers. "
-          "Shutting down wheel_odom_with_covariance and odometry_merged publishers.");
+          "Shutting down wheel_odom_with_covariance and odometry_merged "
+          "publishers.");
       wheel_odom_sub.shutdown();
       wheel_odom_pub.shutdown();
       odom_merged_pub.shutdown();
@@ -329,12 +332,14 @@ int main(int argc, char** argv) {
         imu_sub = nh.subscribe("firmware/imu", 5, imu_callback);
         imu_advertised = true;
       }
-      if(!odom_merged_advertised && imu_advertised && wheel_odom_advertised) {
+      if (!odom_merged_advertised && imu_advertised && wheel_odom_advertised) {
         ROS_INFO(
             "Both firmware/imu and firmware/wheel_odom topics are advertised. "
             "Advertising odometry_merged topic.");
-        odom_merged_pub = nh.advertise<nav_msgs::Odometry>("odometry_merged", 10);
-        odom_merged_timer = nh.createTimer(ros::Duration(0.01), merge_odometry_callback);
+        odom_merged_pub =
+            nh.advertise<nav_msgs::Odometry>("odometry_merged", 10);
+        odom_merged_timer =
+            nh.createTimer(ros::Duration(0.01), merge_odometry_callback);
         odom_merged_advertised = true;
       }
     }
