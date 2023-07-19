@@ -26,7 +26,6 @@ class TestMode(Enum):
 
 
 class HardwareTester:
-
     is_new_imu_data = 0
     is_new_wheel_data = 0
     is_new_battery_data = 0
@@ -37,7 +36,6 @@ class HardwareTester:
     battery_data = Float32()
 
     def __init__(self) -> None:
-
         self.rospack = rospkg.RosPack()
         self.path = self.rospack.get_path("leo_fw") + "/test_data/"
 
@@ -95,7 +93,6 @@ class HardwareTester:
         speed_limit = 1
 
         for pwm in range(30):
-
             self.cmd_pwmfl_pub.publish(Float32(pwm))
             self.cmd_pwmfr_pub.publish(Float32(pwm))
             self.cmd_pwmrl_pub.publish(Float32(-pwm))
@@ -132,7 +129,6 @@ class HardwareTester:
             wheel_valid = parse_yaml(self.path + "encoder.yaml")
 
         for wheel_test in wheel_valid["tests"]:
-
             self.cmd_velfl_pub.publish(wheel_test["velocity"])
             self.cmd_velfr_pub.publish(wheel_test["velocity"])
             self.cmd_velrl_pub.publish(wheel_test["velocity"])
@@ -274,7 +270,6 @@ class HardwareTester:
         self,
         hardware: TestMode = TestMode.ALL,
     ) -> None:
-
         write_flush("--> Checking if rosserial node is active.. ")
 
         if rospy.resolve_name("serial_node") in rosnode.get_node_names():

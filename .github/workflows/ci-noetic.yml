@@ -10,6 +10,26 @@ on:
     - master
 
 jobs:
+  clang-format-check:
+    name: Clang-format formatting check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run clang-format style check.
+      uses: jidicula/clang-format-action@v4.11.0
+      with:
+        clang-format-version: '10'
+  
+  black-check:
+    name: Black formatting check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run black style check
+        uses: psf/black@stable
+        with:
+          version: "23.7.0"
+
   industrial_ci:
     runs-on: ubuntu-latest
     strategy:
@@ -31,11 +51,3 @@ jobs:
           PYLINT_CHECK: true
           PYLINT_ARGS: '--rcfile=src/leo_robot/.pylintrc'
           PYLINT_EXCLUDE: 'setup.py'
-      - name: clang-format check
-        uses: 'ros-industrial/industrial_ci@master'
-        env:
-          CLANG_FORMAT_CHECK: 'file'
-      - name: black check
-        uses: 'ros-industrial/industrial_ci@master'
-        env:
-          BLACK_CHECK: true
