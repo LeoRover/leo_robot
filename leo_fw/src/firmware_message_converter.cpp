@@ -159,8 +159,8 @@ void merge_odometry_callback(const ros::TimerEvent& events) {
 
   merged_odom.pose.pose.position.x = odom_merged_position.x;
   merged_odom.pose.pose.position.y = odom_merged_position.y;
-  merged_odom.pose.pose.orientation.z = std::sin(odom_merged_yaw * 0.5F);
-  merged_odom.pose.pose.orientation.w = std::cos(odom_merged_yaw * 0.5F);
+  merged_odom.pose.pose.orientation.z = std::sin(odom_merged_yaw * 0.5);
+  merged_odom.pose.pose.orientation.w = std::cos(odom_merged_yaw * 0.5);
 
   odom_merged_pub.publish(merged_odom);
 }
