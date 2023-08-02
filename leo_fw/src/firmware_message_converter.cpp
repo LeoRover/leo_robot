@@ -163,7 +163,7 @@ void mecanum_odom_callback(const leo_msgs::WheelOdomMecanumPtr& msg) {
 
   for (int i = 0; i < 6; i++)
     wheel_odom.twist.covariance[i * 7] =
-        mecanum_wheel_odom_twist_covariance_diagonal[i];
+        wheel_odom_mecanum_twist_covariance_diagonal[i];
 
   wheel_odom_pub.publish(wheel_odom);
 }
