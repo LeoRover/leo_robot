@@ -392,9 +392,11 @@ int main(int argc, char** argv) {
         imu_sub = nh.subscribe("firmware/imu", 5, imu_callback);
         imu_advertised = true;
       }
-      if (!odom_merged_advertised && imu_advertised && wheel_odom_advertised) {
+      if (!odom_merged_advertised && imu_advertised &&
+          (wheel_odom_advertised || wheel_odom_mecanum_advertised)) {
         ROS_INFO(
-            "Both firmware/imu and firmware/wheel_odom topics are advertised. "
+            "Both firmware/imu and (firmware/wheel_odom or "
+            "firmware/wheel_odom_mecanum) topics are advertised. "
             "Advertising odometry_merged topic.");
         odom_merged_pub =
             nh.advertise<nav_msgs::Odometry>("odometry_merged", 10);
