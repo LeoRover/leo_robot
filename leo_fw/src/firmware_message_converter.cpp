@@ -144,8 +144,8 @@ void merge_odometry_callback(const ros::TimerEvent& events) {
   merged_odom.twist.twist.linear.x = velocity_linear_x;
   merged_odom.twist.twist.angular.z = velocity_angular_z;
 
-  const float move_x = velocity_linear_x * std::cos(odom_merged_yaw);
-  const float move_y = velocity_linear_x * std::sin(odom_merged_yaw);
+  const double move_x = velocity_linear_x * std::cos(odom_merged_yaw);
+  const double move_y = velocity_linear_x * std::sin(odom_merged_yaw);
 
   odom_merged_position.x += move_x * 0.01;
   odom_merged_position.y += move_y * 0.01;
