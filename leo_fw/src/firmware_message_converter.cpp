@@ -223,9 +223,9 @@ bool set_imu_calibration_callback(leo_msgs::SetImuCalibrationRequest& req,
 
 bool reset_odometry_callback(std_srvs::TriggerRequest& req,
                              std_srvs::TriggerResponse& res) {
-  odom_merged_position.x = 0.0F;
-  odom_merged_position.y = 0.0F;
-  odom_merged_yaw = 0.0F;
+  odom_merged_position.x = 0.0;
+  odom_merged_position.y = 0.0;
+  odom_merged_yaw = 0.0;
   if (odom_reset_client.call(req, res)) {
     res.success = true;
     return true;
