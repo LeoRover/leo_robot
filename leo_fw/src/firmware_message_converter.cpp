@@ -17,6 +17,8 @@
 
 #include "leo_msgs/SetImuCalibration.h"
 
+constexpr double PI = 3.141592653;
+
 static ros::Subscriber wheel_states_sub;
 static ros::Publisher joint_states_pub;
 static bool joint_states_advertised = false;
@@ -32,13 +34,12 @@ static bool imu_advertised = false;
 static ros::Publisher odom_merged_pub;
 static ros::Timer odom_merged_timer;
 static geometry_msgs::Point odom_merged_position;
-static float odom_merged_yaw;
+static double odom_merged_yaw;
 static bool odom_merged_advertised = false;
-static float velocity_linear_x = 0;
-static float velocity_angular_z = 0;
-ros::ServiceClient odom_reset_client;
-ros::ServiceServer reset_odometry_service;
-static constexpr float PI = 3.141592653F;
+static double velocity_linear_x = 0;
+static double velocity_angular_z = 0;
+static ros::ServiceClient odom_reset_client;
+static ros::ServiceServer reset_odometry_service;
 
 ros::ServiceServer set_imu_calibration_service;
 
@@ -151,10 +152,10 @@ void merge_odometry_callback(const ros::TimerEvent& events) {
 
   odom_merged_yaw += velocity_angular_z * 0.01;
 
-  if (odom_merged_yaw > 2.0F * PI)
-    odom_merged_yaw -= 2.0F * PI;
-  else if (odom_merged_yaw < 0.0F)
-    odom_merged_yaw += 2.0F * PI;
+  if (odom_merged_yaw > 2.0 * PI)
+    odom_merged_yaw -= 2.0 * PI;
+  else if (odom_merged_yaw < 0.0)
+    odom_merged_yaw += 2.0 * PI;
 
   merged_odom.pose.pose.position.x = odom_merged_position.x;
   merged_odom.pose.pose.position.y = odom_merged_position.y;
