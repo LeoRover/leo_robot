@@ -6,6 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   roscpp
   sensor_msgs
+  std_srvs
 )
 
 find_package(yaml-cpp REQUIRED)
@@ -18,6 +19,7 @@ catkin_package(
     nav_msgs
     roscpp
     sensor_msgs
+    std_srvs
 )
 
 include_directories(
