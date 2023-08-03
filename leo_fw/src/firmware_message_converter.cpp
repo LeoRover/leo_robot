@@ -197,7 +197,7 @@ void merge_odometry_callback(const ros::TimerEvent& events) {
   merged_odom.pose.pose.orientation.z = std::sin(odom_merged_yaw * 0.5);
   merged_odom.pose.pose.orientation.w = std::cos(odom_merged_yaw * 0.5);
 
-  std::vector<double> *merged_covariance;
+  std::vector<double>* merged_covariance;
 
   if (wheel_odom_mecanum_advertised)
     merged_covariance = &wheel_odom_mecanum_twist_covariance_diagonal;
@@ -206,7 +206,8 @@ void merge_odometry_callback(const ros::TimerEvent& events) {
 
   for (int i = 0; i < 5; i++)
     merged_odom.twist.covariance[i * 7] = (*merged_covariance)[i];
-  merged_odom.twist.covariance[35] = imu_angular_velocity_covariance_diagonal[2];
+  merged_odom.twist.covariance[35] =
+      imu_angular_velocity_covariance_diagonal[2];
 
   odom_merged_pub.publish(merged_odom);
 }
