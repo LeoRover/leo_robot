@@ -1,13 +1,14 @@
 <launch>
 
   <arg name="upload_description" default="true"/>
+  <arg name="mecanum_wheels" default="false"/> 
   <arg name="tf_frame_prefix" default=""/>
 
   <rosparam command="load" file="$(find leo_bringup)/config/firmware.yaml"/>
     
   <param if="$(arg upload_description)"
          name="robot_description" 
-         command="xacro $(find leo_description)/urdf/leo.urdf.xacro"/>
+         command="xacro $(find leo_description)/urdf/leo.urdf.xacro mecanum_wheels:=$(arg mecanum_wheels)"/>
 
   <node name="robot_state_publisher"
         pkg="robot_state_publisher"
