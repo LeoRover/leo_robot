@@ -5,6 +5,9 @@
   <arg name="tf_frame_prefix" default=""/>
 
   <rosparam command="load" file="$(find leo_bringup)/config/firmware.yaml"/>
+  <group if="$(arg mecanum_wheels)">
+    <param name="firmware/mecanum_wheels" value="true"/>
+  </group> 
     
   <param if="$(arg upload_description)"
          name="robot_description" 
