@@ -2,6 +2,15 @@
 Changelog for package leo_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update author info
+* Remove old deprecated firmware parameters
+* Override firmware/mecanum_wheels parameter when mecanum_wheels argument is set
+* Add mecanum_wheels argument to leo_bringup.launch (`#14 <https://github.com/LeoRover/leo_robot/issues/14>`_)
+* Mecanum wheels handling in merged odometry (`#10 <https://github.com/LeoRover/leo_robot/issues/10>`_)
+* Contributors: Aleksander Szymański, Błażej Sowa
+
 2.3.0 (2022-08-24)
 ------------------
 

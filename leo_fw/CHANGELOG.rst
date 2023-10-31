@@ -2,6 +2,16 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update firmware binaries
+* Update author info
+* Mecanum wheels handling in merged odometry (`#10 <https://github.com/LeoRover/leo_robot/issues/10>`_)
+* added std_srvs to package dependencies (`#13 <https://github.com/LeoRover/leo_robot/issues/13>`_)
+* Add merged odometry to firmware_message_converter (`#11 <https://github.com/LeoRover/leo_robot/issues/11>`_)
+* CI improvements and format fixes (`#12 <https://github.com/LeoRover/leo_robot/issues/12>`_)
+* Contributors: Aleksander Szymański, Błażej Sowa
+
 2.3.0 (2022-08-24)
 ------------------
 * Add IMU gyro calibration (`#9 <https://github.com/LeoRover/leo_robot/issues/9>`_)
