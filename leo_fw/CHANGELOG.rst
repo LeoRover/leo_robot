@@ -2,8 +2,8 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.4.0 (2023-10-31)
+------------------
 * Update firmware binaries
 * Update author info
 * Mecanum wheels handling in merged odometry (`#10 <https://github.com/LeoRover/leo_robot/issues/10>`_)

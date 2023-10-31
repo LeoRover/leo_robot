@@ -2,8 +2,8 @@
 Changelog for package leo_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.4.0 (2023-10-31)
+------------------
 * Update author info
 * Remove old deprecated firmware parameters
 * Override firmware/mecanum_wheels parameter when mecanum_wheels argument is set
