@@ -2,6 +2,11 @@
 Changelog for package leo_fw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update firmware binaries
+* Contributors: Błażej Sowa
+
 2.4.0 (2023-10-31)
 ------------------
 * Update firmware binaries
